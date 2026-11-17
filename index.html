@@ -1,0 +1,1344 @@
+<!-- prueba --><!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Prototipo EFE Trenes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="EFE Trenes">
+</head>
+<body>
+
+<meta name="description" content="Prototipo high-fi de la app EFE Trenes de Chile: trabajo grupal del curso Diseño de experiencia para el usuario digital.">
+<meta name="theme-color" content="#0B2545">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap">
+<style>
+/* Página: app a pantalla completa en celulares; en computador, teléfono centrado con una ficha al lado.
+   Color de la app: azul EFE profundo + rojo como acento de acción; verde y ámbar solo como estado. */
+:root {
+  --page: #E8ECF2; --page-ink: #0B1A2E; --page-muted: #4A5568; --page-line: #CBD3DD; --frame: #0B1A2E; --chip: #D9E1EB; --page-accent: #C8102E;
+  --display: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+  --body: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --page: #0A1220; --page-ink: #E8EDF3; --page-muted: #A7B3C2; --page-line: #26344A; --frame: #26344A; --chip: #1A2638; --page-accent: #FF6B7D; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --page: #0A1220; --page-ink: #E8EDF3; --page-muted: #A7B3C2; --page-line: #26344A; --frame: #26344A; --chip: #1A2638; --page-accent: #FF6B7D; color-scheme: dark; }
+
+html, body { height: 100%; }
+body { margin: 0; background: var(--page); color: var(--page-ink); font-family: var(--body); }
+.wrap { min-height: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 48px; padding-block: 24px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); box-sizing: border-box; }
+.phone { width: 390px; max-width: 100%; height: min(844px, calc(100dvh - 48px)); min-height: 560px; border: 10px solid var(--frame); border-radius: 46px; overflow: hidden; flex: none; background: #F3F5F9; }
+#app { width: 100%; height: 100%; }
+.side { flex: 0 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.side .eyebrow { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--page-accent); }
+.side h1 { margin: 0; font-family: var(--display); font-size: 34px; line-height: 1.1; letter-spacing: -0.02em; font-weight: 800; text-wrap: balance; }
+.side p { margin: 0; font-size: 15px; line-height: 1.55; color: var(--page-muted); }
+.side ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.side li { display: flex; gap: 10px; align-items: baseline; font-size: 14px; line-height: 1.45; }
+.side li b { flex: none; min-width: 28px; padding: 2px 6px; border-radius: 6px; background: var(--chip); font-size: 12px; text-align: center; }
+.side .note { font-size: 13px; padding-top: 14px; border-top: 1px solid var(--page-line); }
+@media (max-width: 560px) {
+  html, body { overflow: hidden; }
+  .wrap { display: block; padding: 0; min-height: 0; height: 100%; }
+  .phone { width: 100%; height: 100%; min-height: 0; border: 0; border-radius: 0; }
+  .side { display: none; }
+}
+
+/* ================= APP (diseño fijo en claro, con modo alto contraste propio) ================= */
+.app {
+  --fs: 1;
+  --bg: #F3F5F9; --card: #FFFFFF; --ink: #0B1A2E; --muted: #4A5568; --line: #DDE3EA; --soft: #E7EEF7;
+  --navy: #0B2545; --navy2: #13335E; --navy-ink: #C7D4E6; --red: #C8102E; --red-soft: #FBE7EA;
+  --ok: #156A3E; --okbg: #E2F3E9; --warn: #9A4700; --warnbg: #FDEBD7; --off: #8590A0;
+  --shadow: 0 1px 2px rgba(11, 37, 69, 0.06), 0 6px 20px rgba(11, 37, 69, 0.06);
+  position: relative; width: 100%; height: 100%; overflow: hidden; display: flex; flex-direction: column;
+  background: var(--bg); color: var(--ink); font-family: var(--body); font-size: calc(15px * var(--fs)); line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+.app.big { --fs: 1.2; }
+.app.hc { --muted: #1F2937; --line: #4B5563; --bg: #FFFFFF; --soft: #D4DEEB; --off: #4B5563; --navy-ink: #E6EDF6; --shadow: none; }
+.app *, .app *::before, .app *::after { box-sizing: border-box; }
+.app button, .app input { font: inherit; color: inherit; }
+.app button { border: 0; background: none; padding: 0; margin: 0; cursor: pointer; text-align: inherit; -webkit-tap-highlight-color: transparent; }
+.app button:disabled { cursor: default; }
+.app :focus-visible { outline: 3px solid #2F6FD6; outline-offset: 2px; }
+.app p, .app h1, .app h2, .app h3 { margin: 0; }
+.app svg { flex: none; }
+.app .t11 { font-size: calc(11px * var(--fs)); line-height: 1.35; }
+.app .t12 { font-size: calc(12px * var(--fs)); line-height: 1.4; }
+.app .t13 { font-size: calc(13px * var(--fs)); line-height: 1.45; }
+.app .t14 { font-size: calc(14px * var(--fs)); line-height: 1.45; }
+.app .t16 { font-size: calc(16px * var(--fs)); line-height: 1.4; }
+.app .t18 { font-size: calc(18px * var(--fs)); line-height: 1.3; }
+.app .t20 { font-size: calc(20px * var(--fs)); line-height: 1.25; }
+.app .t24 { font-size: calc(24px * var(--fs)); line-height: 1.2; }
+.app .t28 { font-size: calc(28px * var(--fs)); line-height: 1.15; }
+.app .t34 { font-size: calc(34px * var(--fs)); line-height: 1.1; }
+.app .disp { font-family: var(--display); letter-spacing: -0.02em; }
+.app .b6 { font-weight: 600; } .app .b7 { font-weight: 700; } .app .b8 { font-weight: 800; }
+.app .muted { color: var(--muted); }
+.app .num { font-variant-numeric: tabular-nums; }
+.app .wrapw { overflow-wrap: anywhere; min-width: 0; }
+.app .grow { flex: 1 1 auto; min-width: 0; }
+.app .col { display: flex; flex-direction: column; }
+.app .g2 { gap: 2px; } .app .g4 { gap: 4px; } .app .g6 { gap: 6px; } .app .g8 { gap: 8px; } .app .g10 { gap: 10px; } .app .g12 { gap: 12px; } .app .g14 { gap: 14px; }
+.app .rowf { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.app .between { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.app .wrapflex { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Pantallas y barras */
+.app .screen { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.app .top { display: flex; align-items: center; gap: 4px; padding: 8px 12px 8px 6px; min-height: 60px; background: var(--card); border-bottom: 1px solid var(--line); }
+.app .top.root { padding-left: 6px; }
+.app .top.flat { border-bottom: 0; }
+.app .top h1 { flex: 1; min-width: 0; font-family: var(--display); font-weight: 800; letter-spacing: -0.01em; overflow-wrap: anywhere; }
+.app .top.nb { padding-left: 20px; }
+.app .ib { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--navy); flex: none; }
+.app .ib:hover { background: var(--soft); }
+.app .aa { width: 44px; height: 44px; border-radius: 12px; flex: none; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; border: 1.5px solid var(--line); background: var(--card); color: var(--navy); }
+.app .aa[aria-pressed="true"] { background: var(--navy); color: #fff; border-color: var(--navy); }
+.app .scroll { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 16px; display: flex; flex-direction: column; gap: 14px; scrollbar-width: none; }
+.app .scroll::-webkit-scrollbar { display: none; }
+.app .scroll > *, .app .sheet .list > * { flex-shrink: 0; }
+.app .col > .pill { align-self: flex-start; }
+.app .foot { padding: 12px 16px; background: var(--card); border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; }
+
+/* Tarjetas y filas */
+.app .card { background: var(--card); border-radius: 20px; padding: 16px; box-shadow: var(--shadow); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.app .card.navy { background: var(--navy); color: #fff; border-color: var(--navy); }
+.app .card.soft { background: var(--soft); border-color: transparent; box-shadow: none; }
+.app .card.tight { padding: 4px 16px; gap: 0; }
+.app .lrow { width: 100%; display: flex; align-items: center; gap: 12px; padding: 14px 16px; min-height: 60px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; color: var(--ink); text-align: left; box-shadow: var(--shadow); }
+.app .lrow.sel { background: var(--soft); border: 2px solid var(--navy); }
+.app .lrow .chev { color: var(--muted); display: flex; }
+.app .tile { width: 40px; height: 40px; border-radius: 12px; background: var(--soft); color: var(--navy); display: flex; align-items: center; justify-content: center; flex: none; }
+.app .tile.red { background: var(--red); color: #fff; }
+.app .tile.navy { background: var(--navy); color: #fff; }
+.app .sep { border-top: 1px solid var(--line); }
+.app .irow { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.app .irow:last-child { border-bottom: 0; }
+.app .sec { font-weight: 700; font-size: calc(16px * var(--fs)); font-family: var(--display); }
+
+/* Botones */
+.app .btn { width: 100%; min-height: 52px; padding: 12px 18px; border-radius: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; text-align: center; overflow-wrap: anywhere; }
+.app .btn.primary { background: var(--red); color: #fff; }
+.app .btn.primary:disabled { background: var(--line); color: var(--muted); }
+.app .btn.navy { background: var(--navy); color: #fff; }
+.app .btn.outline { border: 1.5px solid var(--navy); color: var(--navy); background: var(--card); }
+.app .btn.ghost { color: var(--navy); min-height: 48px; }
+.app .btn.white { background: #fff; color: var(--navy); }
+.app .btn.onnavy { border: 1.5px solid #7F97B5; color: #fff; }
+.app .btn.auto { width: auto; }
+.app .btn.sm { min-height: 44px; padding: 8px 16px; border-radius: 12px; }
+.app .link { color: var(--navy); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; min-height: 44px; display: inline-flex; align-items: center; }
+
+/* Chips y controles segmentados */
+.app .chip { min-height: 44px; padding: 8px 16px; border-radius: 999px; font-weight: 600; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); overflow-wrap: anywhere; }
+.app .chip[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+.app .seg { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: var(--soft); border-radius: 14px; }
+.app .seg button { flex: 1 1 0; min-width: max-content; min-height: 44px; padding: 6px 10px; border-radius: 10px; font-weight: 700; color: var(--muted); text-align: center; }
+.app .seg button[aria-pressed="true"] { background: var(--card); color: var(--navy); box-shadow: 0 1px 3px rgba(11, 37, 69, 0.12); }
+
+/* Estados */
+.app .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: calc(12px * var(--fs)); max-width: 100%; }
+.app .pill.ok { background: var(--okbg); color: var(--ok); }
+.app .pill.warn { background: var(--warnbg); color: var(--warn); }
+.app .pill.info { background: var(--soft); color: var(--navy); }
+.app .pill .dot { width: 8px; height: 8px; border-radius: 99px; background: currentColor; flex: none; }
+.app .metro { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-weight: 800; color: #fff; font-size: calc(11px * var(--fs)); }
+.app .metro.L1 { background: #C5161E; }
+.app .metro.L6 { background: #7E3A8C; }
+
+/* Interruptor */
+.app .sw { width: 50px; height: 30px; border-radius: 999px; flex: none; display: flex; align-items: center; padding: 4px; background: var(--off); justify-content: flex-start; }
+.app .sw::after { content: ""; width: 22px; height: 22px; border-radius: 999px; background: #fff; }
+.app [aria-pressed="true"] > .sw, .app [aria-checked="true"] > .sw { background: var(--navy); justify-content: flex-end; }
+
+/* Formularios */
+.app .field { display: flex; flex-direction: column; gap: 6px; }
+.app .field label { font-weight: 600; }
+.app .field input[type="text"], .app .field input[type="email"], .app .field input[type="password"] { width: 100%; min-height: 52px; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--card); color: var(--ink); font-size: calc(16px * var(--fs)); }
+.app .field input:focus { border-color: var(--navy); outline: none; box-shadow: 0 0 0 3px rgba(47, 111, 214, 0.25); }
+.app .field input[aria-invalid="true"] { border-color: var(--red); }
+.app .err { color: var(--red); font-weight: 600; font-size: calc(13px * var(--fs)); min-height: 0; }
+.app .check { display: flex; gap: 12px; align-items: flex-start; text-align: left; min-height: 44px; }
+.app .box { width: 24px; height: 24px; border-radius: 7px; border: 2px solid var(--navy); flex: none; display: flex; align-items: center; justify-content: center; color: #fff; margin-top: 1px; }
+.app [aria-checked="true"] > .box { background: var(--navy); }
+
+/* Slider de hora */
+.app .slider { display: flex; flex-direction: column; gap: 8px; }
+.app .slider .val { font-family: var(--display); font-weight: 800; color: var(--navy); }
+.app input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 44px; background: transparent; margin: 0; cursor: pointer; }
+.app input[type="range"]::-webkit-slider-runnable-track { height: 8px; border-radius: 99px; background: linear-gradient(to right, var(--navy) 0 var(--p), var(--line) var(--p) 100%); }
+.app input[type="range"]::-moz-range-track { height: 8px; border-radius: 99px; background: var(--line); }
+.app input[type="range"]::-moz-range-progress { height: 8px; border-radius: 99px; background: var(--navy); }
+.app input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 30px; margin-top: -11px; border-radius: 50%; background: #fff; border: 3px solid var(--navy); box-shadow: 0 2px 6px rgba(11, 37, 69, 0.25); }
+.app input[type="range"]::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: #fff; border: 3px solid var(--navy); }
+.app .ticks { display: flex; justify-content: space-between; color: var(--muted); font-size: calc(12px * var(--fs)); }
+
+/* Línea de estaciones */
+.app .stop { display: flex; gap: 12px; align-items: stretch; min-height: 50px; }
+.app .rail { width: 20px; display: flex; flex-direction: column; align-items: center; flex: none; }
+.app .rail i { width: 4px; flex: 1; background: var(--navy); }
+.app .rail i.no { background: transparent; }
+.app .rail b { width: 12px; height: 12px; border-radius: 99px; background: var(--card); border: 3px solid var(--navy); flex: none; }
+.app .rail b.end { width: 16px; height: 16px; background: var(--navy); border: 0; }
+.app .rail b.here { width: 22px; height: 22px; background: var(--red); border: 4px solid #fff; box-shadow: 0 0 0 2px var(--red); }
+.app .stop .info { flex: 1; min-width: 0; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 6px 0; flex-wrap: wrap; }
+
+/* Barra inferior */
+.app .tabbar { display: flex; background: var(--card); border-top: 1px solid var(--line); padding: 6px 4px 12px; }
+.app .tabbar button { flex: 1 1 0; min-width: 0; min-height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--muted); }
+.app .tabbar .pillic { position: relative; width: 58px; height: 32px; border-radius: 999px; display: flex; align-items: center; justify-content: center; }
+.app .tabbar button[aria-current="page"] { color: var(--navy); }
+.app .tabbar button[aria-current="page"] .pillic { background: var(--soft); }
+.app .tabbar .lab { font-size: 11px; font-weight: 600; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.app.big .tabbar .lab { font-size: 12px; }
+.app .tabbar button[aria-current="page"] .lab { font-weight: 800; }
+.app .badge { position: absolute; top: -4px; right: 6px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--red); color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+
+/* Superposiciones */
+.app .sheetwrap { position: absolute; inset: 0; z-index: 20; background: rgba(11, 26, 46, 0.55); display: flex; flex-direction: column; justify-content: flex-end; }
+.app .sheetwrap > .scrim { flex: 1; min-height: 60px; }
+.app .sheet { background: var(--card); border-radius: 24px 24px 0 0; max-height: 82%; display: flex; flex-direction: column; }
+.app .sheet .grab { width: 40px; height: 5px; border-radius: 9px; background: var(--line); margin: 8px auto 0; }
+.app .sheet .list { overflow-y: auto; padding: 6px 8px 18px; display: flex; flex-direction: column; }
+.app .opt { width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px; min-height: 56px; text-align: left; border-radius: 12px; color: var(--ink); }
+.app .opt[aria-pressed="true"] { background: var(--soft); }
+.app .opt .ck { color: var(--navy); display: flex; }
+.app .grouplab { padding: 12px 12px 4px; color: var(--muted); font-weight: 700; font-size: calc(12px * var(--fs)); }
+.app .banner { position: absolute; top: 10px; left: 10px; right: 10px; z-index: 30; background: var(--ink); color: #fff; border-radius: 18px; padding: 10px 6px 10px 12px; display: flex; gap: 10px; align-items: center; animation: bnIn .32s ease-out; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+.app .toast { position: absolute; left: 16px; right: 16px; bottom: 156px; z-index: 25; background: var(--ink); color: #fff; border-radius: 14px; padding: 14px 16px; display: flex; gap: 10px; align-items: center; animation: tsIn .25s ease-out; }
+.app .toast.low { bottom: auto; top: 70px; }
+@keyframes bnIn { from { transform: translateY(-24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes tsIn { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .app .banner, .app .toast, .app .typing span { animation: none; } }
+
+/* Botón de ayuda flotante y chat */
+.app .fab { position: absolute; right: 16px; bottom: 88px; z-index: 15; width: 58px; height: 58px; border-radius: 20px; background: var(--red); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 22px rgba(200, 16, 46, 0.35); }
+.app.inapp .screen .scroll { padding-bottom: 88px; }
+.app .sheet.chat { height: 88%; max-height: 88%; }
+.app .msgs { flex: 1; min-height: 0; overflow-y: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.app .msgs > * { flex-shrink: 0; }
+.app .bub { max-width: 86%; padding: 10px 14px; border-radius: 18px; overflow-wrap: anywhere; }
+.app .bub.bot { background: var(--soft); color: var(--ink); align-self: flex-start; border-bottom-left-radius: 6px; }
+.app .bub.me { background: var(--navy); color: #fff; align-self: flex-end; border-bottom-right-radius: 6px; }
+.app .chatchips { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 16px 10px; }
+.app .chatin { display: flex; gap: 8px; padding: 10px 12px 14px; border-top: 1px solid var(--line); }
+.app .chatin input { flex: 1; min-width: 0; min-height: 48px; padding: 10px 16px; border: 1.5px solid var(--line); border-radius: 999px; background: var(--card); color: var(--ink); font-size: calc(16px * var(--fs)); }
+.app .chatin input:focus { border-color: var(--navy); outline: none; }
+.app .send { width: 48px; height: 48px; border-radius: 999px; background: var(--red); color: #fff; display: flex; align-items: center; justify-content: center; flex: none; }
+.app .typing { display: flex; gap: 5px; align-items: center; min-height: 40px; }
+.app .typing span { width: 7px; height: 7px; border-radius: 99px; background: var(--muted); animation: blink 1s infinite; }
+.app .typing span:nth-child(2) { animation-delay: .15s; } .app .typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes blink { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+.app .errcard { background: var(--red-soft); border-color: #F1BDC6; }
+.app .test { border: 1.5px dashed var(--line); color: var(--muted); }
+
+
+/* Bienvenida */
+.app .hero { background: var(--navy); color: #fff; padding: 18px 20px 28px; display: flex; flex-direction: column; gap: 14px; position: relative; }
+.app .hero .lang { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(255,255,255,.1); }
+.app .hero .lang button { min-height: 36px; padding: 4px 12px; border-radius: 999px; font-weight: 700; color: var(--navy-ink); font-size: calc(13px * var(--fs)); }
+.app .hero .lang button[aria-pressed="true"] { background: #fff; color: var(--navy); }
+
+/* Inicio */
+.app .homehead { background: var(--navy); color: #fff; padding: 12px 12px 12px 20px; display: flex; align-items: center; gap: 8px; }
+.app .homehead .aa { background: transparent; color: #fff; border-color: rgba(255,255,255,.35); }
+.app .homehead .aa[aria-pressed="true"] { background: #fff; color: var(--navy); }
+.app .homescroll { background: linear-gradient(var(--navy) 0 44px, transparent 44px) local; }
+.app .ring { position: relative; width: calc(92px * var(--fs)); height: calc(92px * var(--fs)); flex: none; }
+.app .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.app .ring .in { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; }
+.app .qa { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.app.big .qa { grid-template-columns: minmax(0, 1fr); }
+.app .qa button { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 14px; min-height: 96px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; text-align: left; box-shadow: var(--shadow); min-width: 0; }
+.app.big .qa button { flex-direction: row; align-items: center; min-height: 64px; }
+.app .fares { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.app.big .fares { grid-template-columns: minmax(0, 1fr); }
+.app .fare { padding: 10px 12px; border-radius: 14px; background: var(--bg); border: 2px solid transparent; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.app .fare.on { border-color: var(--navy); background: var(--navy); color: #fff; }
+.app .fare .tag { align-self: flex-start; margin-top: 4px; padding: 2px 8px; border-radius: 999px; background: #fff; color: var(--navy); font-weight: 800; font-size: calc(11px * var(--fs)); }
+.app .kv { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.app.big .kv { grid-template-columns: minmax(0, 1fr); }
+.app .kv > div { padding: 10px 12px; border-radius: 12px; background: var(--bg); display: flex; flex-direction: column; gap: 2px; min-width: 0; overflow-wrap: anywhere; }
+.app .seats { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.app .seatrow { display: flex; align-items: center; gap: 8px; }
+.app .seat { width: 44px; height: 44px; border-radius: 10px; font-weight: 800; font-size: 12px; display: flex; align-items: center; justify-content: center; background: var(--card); color: var(--navy); border: 1.5px solid var(--navy); }
+.app .seat[aria-pressed="true"] { background: var(--navy); color: #fff; }
+.app .seat:disabled { background: var(--line); color: var(--muted); border-color: var(--line); }
+.app .qr { display: grid; grid-template-columns: repeat(21, 8px); grid-auto-rows: 8px; padding: 12px; background: #fff; border: 1px solid var(--line); border-radius: 14px; }
+.app .qr i { display: block; }
+.app .qr i.d { background: #0B1A2E; }
+.app .steps { display: flex; gap: 6px; }
+.app .steps > div { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.app .steps .bar { height: 6px; border-radius: 99px; background: var(--line); }
+.app .steps .on .bar { background: var(--red); }
+.app .wallet-card { border-radius: 20px; padding: 18px; color: #fff; display: flex; flex-direction: column; gap: 14px; position: relative; overflow: hidden; }
+.app .wallet-card { background-image: radial-gradient(circle at 100% 0, rgba(255,255,255,.08) 0 82px, transparent 83px); }
+</style>
+
+<div class="wrap">
+  <div class="phone"><div id="app"></div></div>
+  <aside class="side" aria-label="Sobre este prototipo">
+    <p class="eyebrow">Prototipo high-fi</p>
+    <h1>App EFE Trenes, rediseñada</h1>
+    <p>Propuesta del trabajo grupal del curso Diseño de experiencia para el usuario digital (Clase Ejecutiva UC). Navega con la barra inferior como en una app real.</p>
+    <ul>
+      <li><b>S1</b><span>Inicio muestra en cuántos minutos pasa tu tren y la línea en vivo.</span></li>
+      <li><b>S2</b><span>Billetera única y compra de pasajes en 3 pasos.</span></li>
+      <li><b>S3</b><span>Avisos de retraso antes de salir y estado de cada servicio.</span></li>
+      <li><b>S4</b><span>Paga el Tren Nos con Bip!QR y ve destacada la tarifa del horario en que viajas.</span></li>
+      <li><b>S5</b><span>Inicio de sesión, cuenta nueva o invitado; idioma y texto grande desde el primer paso.</span></li>
+      <li><b>S6</b><span>Botón de ayuda siempre a mano para reportar al instante un pago fallido u otro problema.</span></li>
+    </ul>
+    <p class="note">Ábrelo en tu celular para usarlo a pantalla completa. Tiempos, retrasos, saldos y pasajes son simulados. Estaciones, tramos y tarifas del Tren Nos y combinaciones con Metro son los publicados en efe.cl.</p>
+  </aside>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var app = document.getElementById('app');
+
+  /* ============================ DATOS ============================ */
+  var SV = [
+    { id: 'nos', name: 'Tren Nos – Estación Central', short: 'Tren Nos', g: 'u', freq: 6, per: 3, sim: false, first: { lv: 360, sab: 420, dom: 480 }, last: 1380,
+      st: ['Estación Central', 'Lo Valledor', 'Pedro Aguirre Cerda', 'Lo Espejo', 'Lo Blanco', 'Freire', 'San Bernardo', 'Maestranza', 'Cinco Pinos', 'Nos'],
+      metro: { 'Estación Central': ['L1'], 'Lo Valledor': ['L6'] },
+      note: { 'San Bernardo': ['Combina con trenes a Rancagua, San Fernando y Chillán', 'Change to trains to Rancagua, San Fernando and Chillán'], 'Estación Central': ['Combina con trenes al sur', 'Change to southbound trains'] } },
+    { id: 'lp', name: 'Tren Limache – Puerto', short: 'Limache–Puerto', g: 'u', freq: 8, per: 3, sim: true, first: { lv: 360, sab: 420, dom: 480 }, last: 1380,
+      st: ['Puerto', 'Bellavista', 'Francia', 'Barón', 'Portales', 'Recreo', 'Miramar', 'Viña del Mar', 'Hospital', 'Chorrillos', 'El Salto', 'Quilpué', 'El Sol', 'El Belloto', 'Las Américas', 'La Concepción', 'Villa Alemana', 'Sargento Aldea', 'Peñablanca', 'Limache'],
+      metro: {}, note: { 'Limache': ['Combina con buses a Olmué, Quillota y La Calera', 'Change to buses to Olmué, Quillota and La Calera'] } },
+    { id: 'b1', name: 'Biotren · Línea 1', short: 'Biotren L1', g: 'u', freq: 20, per: 3, sim: true, first: { lv: 390, sab: 420, dom: 480 }, last: 1320,
+      st: ['Mercado de Talcahuano', 'El Arenal', 'Las Higueras', 'Los Cóndores', 'UTF Santa María', 'Lorenzo Arenas', 'Concepción', 'Chiguayante', 'Pedro Medina', 'Manquimávida', 'La Leonera', 'Hualqui'],
+      metro: {}, note: { 'Concepción': ['Combina con Biotren Línea 2', 'Change to Biotren Line 2'] } },
+    { id: 'b2', name: 'Biotren · Línea 2', short: 'Biotren L2', g: 'u', freq: 20, per: 3, sim: true, first: { lv: 390, sab: 420, dom: 480 }, last: 1320,
+      st: ['Concepción', 'Juan Pablo II', 'Diagonal Bío-Bío', 'Alborada', 'Costa Mar', 'El Parque', 'Lomas Coloradas', 'Cardenal Raúl Silva Henríquez', 'Hito Galvarino', 'Los Canelos', 'Huinca', 'Cristo Redentor', 'Laguna Quiñenco', 'Coronel'],
+      metro: {}, note: { 'Concepción': ['Combina con Biotren Línea 1', 'Change to Biotren Line 1'] } },
+    { id: 'ran', name: 'Tren Rancagua – Estación Central', short: 'Rancagua–E. Central', g: 'u', freq: 30, per: 6, sim: true, first: { lv: 390, sab: 420, dom: 480 }, last: 1320,
+      st: ['Estación Central', 'San Bernardo', 'Buin Zoo', 'Buin', 'Linderos', 'Paine', 'Hospital', 'San Francisco', 'Graneros', 'Rancagua'],
+      metro: { 'Estación Central': ['L1'] }, note: { 'San Bernardo': ['Combina con Tren Nos', 'Change to Tren Nos'] } },
+    { id: 'sf', name: 'Tren San Fernando – Estación Central', short: 'San Fernando–E. Central', g: 'r', freq: 180, per: 10, sim: true, partial: true, first: { lv: 420, sab: 480, dom: 480 }, last: 1200,
+      st: ['Estación Central', 'San Bernardo', 'Buin Zoo', 'Hospital', 'San Francisco', 'Rancagua', 'Rosario', 'Rengo', 'San Fernando'],
+      metro: { 'Estación Central': ['L1'] }, note: { 'Rosario': ['Detención reabierta en noviembre de 2026', 'Stop reopened in November 2026'] } },
+    { id: 'tc', name: 'Tren Talca – Constitución', short: 'Talca–Constitución', g: 'r', freq: 240, per: 10, sim: true, first: { lv: 450, sab: 450, dom: 480 }, last: 1080,
+      st: ['Talca', 'Unihue', 'Colín', 'Corinto', 'La Palma', 'Curtiduría', 'Los Llocos', 'El Peumo', 'González Bastías', 'Toconey', 'Pichamán', 'Cruce Las Camionetas', 'Los Romeros', 'Los Maquis', 'Forel', 'Huinganes', 'Maquehua', 'Constitución'],
+      metro: {}, note: {} },
+    { id: 'lt', name: 'Tren Laja – Talcahuano', short: 'Laja–Talcahuano', g: 'r', freq: 300, per: 25, sim: true, partial: true, first: { lv: 420, sab: 480, dom: 480 }, last: 1140,
+      st: ['Laja', 'San Rosendo', 'Talcamávida', 'Hualqui', 'Concepción', 'Talcahuano (El Arenal)'],
+      metro: {}, note: { 'Concepción': ['Combina con Biotren', 'Change to Biotren'] } },
+    { id: 'ch', name: 'Tren Chillán – Estación Central', short: 'Chillán–E. Central', g: 'r', freq: 180, per: 22, sim: true, seats: true, first: { lv: 450, sab: 480, dom: 480 }, last: 1140,
+      st: ['Estación Central', 'San Bernardo', 'Rancagua', 'San Fernando', 'Curicó', 'Molina', 'Talca', 'San Javier', 'Linares', 'Parral', 'San Carlos', 'Chillán'],
+      metro: { 'Estación Central': ['L1'] }, note: {} },
+    { id: 'lpm', name: 'Tren Llanquihue – Puerto Montt', short: 'Llanquihue–P. Montt', g: 'r', freq: 60, per: 8, sim: true, first: { lv: 420, sab: 480, dom: 480 }, last: 1260,
+      st: ['Llanquihue', 'Puerto Varas', 'Alerce', 'Puerto Montt'], metro: {}, note: {} },
+    { id: 'ara', name: 'Tren Araucanía', short: 'Araucanía', g: 'r', freq: 120, per: 10, sim: true, first: { lv: 420, sab: 480, dom: 480 }, last: 1200,
+      st: ['Victoria', 'Pua', 'Perquenco', 'Quillem', 'Lautaro', 'Lautaro Centro', 'Pillanlelbún', 'Cajón', 'Temuco', 'Padre Las Casas', 'Quepe', 'Freire', 'Pitrufquén'],
+      metro: {}, note: { 'Temuco': ['Unión de los tramos Victoria–Temuco y Temuco–Pitrufquén', 'Joins the Victoria–Temuco and Temuco–Pitrufquén sections'] } }
+  ];
+  var SVI = {}; SV.forEach(function (s) { SVI[s.id] = s; });
+  var STATUS = {
+    b2: { ok: false, es: ['Retraso 10 min', 'Un tren está detenido en Coronel por una revisión técnica. Los trenes pasan con unos 10 minutos de atraso (ejemplo).', 'Si vas apurado, usa el bus de acercamiento. Te avisaremos cuando se normalice (ejemplo).'], en: ['10 min delay', 'A train is stopped at Coronel for a technical check. Trains are running about 10 minutes late (example).', 'If you are in a hurry, take the shuttle bus. We will let you know when service is back to normal (example).'] },
+    ch: { ok: false, es: ['Cambio de horario', 'Desde el lunes cambia la hora de salida del tren de la mañana (ejemplo).', 'Revisa tu pasaje en Billetera. Si el cambio te afecta, puedes cambiarlo o anularlo desde ahí (ejemplo).'], en: ['Timetable change', 'From Monday the morning train leaves at a different time (example).', 'Check your ticket in Wallet. If the change affects you, you can change or cancel it there (example).'] }
+  };
+  var HDAYS = [['lv', 'Lunes a viernes', 'Mon–Fri'], ['todos', 'Todos los días', 'Every day'], ['finde', 'Fin de semana', 'Weekends']];
+  var PDAYS = [['lv', 'Lunes a viernes', 'Mon–Fri'], ['sab', 'Sábado', 'Saturday'], ['dom', 'Domingo y festivos', 'Sun & holidays']];
+
+  /* ============================ ESTADO ============================ */
+  function fresh(keep) {
+    var now = Date.now();
+    return {
+      lang: keep ? keep.lang : 'es', big: keep ? keep.big : false, hc: keep ? keep.hc : false,
+      stage: 'welcome', user: null, guest: false, onboarded: false,
+      fl: { email: '', pass: '', err: {} },
+      fs: { name: '', email: '', pass: '', terms: false, err: {} },
+      traveler: 'diario',
+      draft: { svc: 'nos', from: 9, to: 0, days: 'lv', time: 460 },
+      tab: 'inicio', stacks: { inicio: ['home'], viajes: ['plan'], billetera: ['wallet'], alertas: ['alerts'], mas: ['menu'] },
+      now: now, saved: [],
+      plan: { svc: 'nos', from: 9, to: 0, mode: 'cercania', when: 'now', time: 1080, day: 'lv', selT: null },
+      picker: null,
+      delayedFor: null, banner: null, unread: 1,
+      notifs: [{ es: ['Cambio de horario: Chillán – Estación Central', 'Desde el lunes cambia la salida de la mañana (ejemplo).'], en: ['Timetable change: Chillán – Estación Central', 'From Monday the morning departure changes (example).'], at: now - 3 * 3600000 }],
+      toast: '', arrive: false, bq: { on: false, pay: 0, uses: [] }, chat: { open: false, msgs: [], draft: '', typing: false, ctx: null }, saveDays: 'lv',
+      ld: { from: 11, to: 0, date: 0, train: 0, coach: 4, seat: null, pay: 0, guest: true },
+      tickets: [], tkIdx: 0, wallet: { efe: 4320, bip: 2150 }, walletTab: 'cards',
+      rc: { card: 'efe', amount: 3000, pay: 0, added: 0 },
+      alertsOn: true, alertFilter: 'all', sdId: 'nos', svcInfo: 'nos', svcTab: 'est', tutOpen: 0
+    };
+  }
+  var S = fresh(null);
+  var timers = {};
+
+  /* ============================ UTILIDADES ============================ */
+  function L(es, en) { return S.lang === 'en' ? en : es; }
+  function LL(pair) { return S.lang === 'en' ? pair[1] : pair[0]; }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function fmt(t) { var x = ((Math.round(t) % 1440) + 1440) % 1440; return pad(Math.floor(x / 60)) + ':' + pad(x % 60); }
+  function money(n) { return '$' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+  function minsOf(ts) { var d = new Date(ts); return d.getHours() * 60 + d.getMinutes() + d.getSeconds() / 60; }
+  function dayOf(ts) { var w = new Date(ts).getDay(); return w === 0 ? 'dom' : (w === 6 ? 'sab' : 'lv'); }
+  function stops(n) { return n + ' ' + (n === 1 ? L('parada', 'stop') : L('paradas', 'stops')); }
+  function ago(at) { var m = Math.floor((S.now - at) / 60000); if (m < 1) return L('Recién', 'Just now'); if (m < 60) return L('Hace ', '') + m + ' min' + L('', ' ago'); return L('Hace ', '') + Math.floor(m / 60) + ' h' + L('', ' ago'); }
+  function attr(name, v) { return v == null ? '' : ' ' + name + '="' + esc(v) + '"'; }
+  function pressed(b) { return ' aria-pressed="' + (b ? 'true' : 'false') + '"'; }
+  function act(a, arg) { return ' data-act="' + a + '"' + (arg !== undefined ? ' data-arg="' + esc(arg) + '"' : ''); }
+
+  function ic(n, s) {
+    s = s || 22;
+    var P = {
+      back: '<path d="M15 18l-6-6 6-6"/>', chev: '<path d="M9 18l6-6-6-6"/>', down: '<path d="M6 9l6 6 6-6"/>',
+      home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/>',
+      train: '<rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 10h14"/><path d="M9 14h.01"/><path d="M15 14h.01"/><path d="M8 21l2-4"/><path d="M16 21l-2-4"/>',
+      wallet: '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M16 15h2"/><path d="M6 6V5a2 2 0 0 1 2-2h8"/>',
+      bell: '<path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+      grid: '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',
+      swap: '<path d="M7 4v16"/><path d="M3 8l4-4 4 4"/><path d="M17 20V4"/><path d="M21 16l-4 4-4-4"/>',
+      pin: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/>',
+      card: '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>',
+      users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+      alert: '<path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v4"/><path d="M12 17h.01"/>',
+      check: '<path d="M5 12l5 5 9-10"/>', x: '<path d="M18 6 6 18"/><path d="M6 6l12 12"/>', plus: '<path d="M12 5v14"/><path d="M5 12h14"/>',
+      info: '<circle cx="12" cy="12" r="9"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+      clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+      chat: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/><path d="M8.5 12h.01"/><path d="M12 12h.01"/><path d="M15.5 12h.01"/>',
+      send: '<path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/>',
+      access: '<circle cx="12" cy="4.5" r="1.5"/><path d="M5 8l7 1.5L19 8"/><path d="M12 9.5V14"/><path d="M8.5 21l3.5-7 3.5 7"/>',
+      percent: '<path d="M19 5 5 19"/><circle cx="7" cy="7" r="2"/><circle cx="17" cy="17" r="2"/>',
+      play: '<circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5-6-3.5Z"/>',
+      help: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17h.01"/>',
+      globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18"/><path d="M12 3a14 14 0 0 0 0 18"/>',
+      user: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+      logout: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>',
+      refresh: '<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/>',
+      qr: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3z"/><path d="M20 14v7h-6"/>',
+      phone: '<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
+      scan: '<path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/>',
+      metro: '<rect x="4" y="3" width="16" height="16" rx="4"/><path d="M8 15l-2 5"/><path d="M16 15l2 5"/><path d="M8 9h8"/>',
+      ticket: '<path d="M3 8a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v8a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2V8Z"/><path d="M9 6v12"/>',
+      map: '<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14"/><path d="M15 6v14"/>'
+    };
+    return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + P[n] + '</svg>';
+  }
+  function metroBadges(svc, st) {
+    var m = (SVI[svc].metro || {})[st];
+    if (!m) return '';
+    return m.map(function (l) { return '<span class="metro ' + l + '">' + ic('metro', 12) + ' Metro ' + l + '</span>'; }).join(' ');
+  }
+  function stNote(svc, st) { var n = (SVI[svc].note || {})[st]; return n ? LL(n) : ''; }
+
+  /* ============================ HORARIOS (simulados salvo el Tren Nos) ============================ */
+  function deps(svcId, i, j, base, day, n) {
+    var s = SVI[svcId], N = s.st.length, up = j > i;
+    var dist = up ? i : (N - 1 - i);
+    var first = s.first[day] + (up ? 0 : Math.round(s.freq / 2));
+    var out = [];
+    var k = Math.max(0, Math.ceil((base + 0.25 - first - s.per * dist) / s.freq));
+    for (var m = 0; m < 60 && out.length < n; m++) {
+      var T = first + (k + m) * s.freq;
+      if (T > s.last) break;
+      out.push(T + s.per * dist);
+    }
+    return out;
+  }
+  function info(svc, i, j, t) {
+    var key = svc + '-' + i + '-' + j + '-' + t;
+    var delayed = S.delayedFor === key;
+    var est = t + (delayed ? 3 : 0);
+    var secs = Math.max(0, Math.round((est - minsOf(S.now)) * 60));
+    return { delayed: delayed, est: est, secs: secs, min: Math.floor(secs / 60) };
+  }
+  var FARE = { bajo: 735, valle: 815, punta: 895 };
+  function fareName(k) { return { bajo: L('Bajo', 'Low'), valle: L('Valle', 'Off-peak'), punta: L('Punta', 'Peak') }[k]; }
+  function fareBoxes(cur, tag) {
+    return '<div class="fares">' + ['bajo', 'valle', 'punta'].map(function (k) {
+      var on = cur === k;
+      return '<div class="fare' + (on ? ' on' : '') + '"' + (on ? ' aria-current="true"' : '') + '><span class="t12 b7' + (on ? '' : ' muted') + '">' + fareName(k) + '</span><span class="t20 disp b8 num">' + money(FARE[k]) + '</span>' + (on ? '<span class="tag">' + tag + '</span>' : '') + '</div>';
+    }).join('') + '</div>';
+  }
+  function fareNos(t, day) {
+    if (t < SVI.nos.first[day] || t > SVI.nos.last) return null;
+    if (day !== 'lv') return 'valle';
+    if (t >= 360 && t < 420) return 'bajo';
+    if (t >= 420 && t < 540) return 'punta';
+    if (t >= 540 && t < 1080) return 'valle';
+    if (t >= 1080 && t < 1200) return 'punta';
+    if (t >= 1200 && t < 1245) return 'valle';
+    if (t >= 1245 && t <= 1380) return 'bajo';
+    return null;
+  }
+
+  /* ============================ PIEZAS DE INTERFAZ ============================ */
+  function aaBtn(onNavy) { return '<button class="aa"' + act('toggleBig') + pressed(S.big) + ' aria-label="' + L('Texto grande', 'Large text') + '">Aa</button>'; }
+  function topBar(title, opts) {
+    opts = opts || {};
+    var noBack = opts.noBack || opts.root;
+    var back = noBack ? '' : '<button class="ib"' + act(opts.backAct || 'back') + ' aria-label="' + L('Volver', 'Back') + '">' + ic('back', 24) + '</button>';
+    return '<div class="top' + (noBack ? ' nb' : '') + (opts.flat ? ' flat' : '') + '">' + back +
+      '<h1 class="' + (opts.root ? 't24' : 't18') + '">' + title + '</h1>' + aaBtn() + '</div>';
+  }
+  function screen(key, inner) { return '<div class="screen" data-k="' + key + '">' + inner + '</div>'; }
+  function pill(ok, text) { return '<span class="pill ' + (ok ? 'ok' : 'warn') + '"><span class="dot"></span>' + text + '</span>'; }
+  function sw(on) { return '<span class="sw" aria-hidden="true"></span>'; }
+  function swRow(a, on, title, sub) {
+    return '<button class="lrow"' + act(a) + pressed(on) + '><span class="grow col g2"><span class="b7">' + title + '</span>' + (sub ? '<span class="t13 muted">' + sub + '</span>' : '') + '</span>' + sw(on) + '</button>';
+  }
+  function navRow(a, arg, icon, title, sub, tileCls) {
+    return '<button class="lrow"' + act(a, arg) + '><span class="tile ' + (tileCls || '') + '">' + ic(icon) + '</span><span class="grow col g2 wrapw"><span class="b7">' + title + '</span>' + (sub ? '<span class="t13 muted">' + sub + '</span>' : '') + '</span><span class="chev">' + ic('chev', 20) + '</span></button>';
+  }
+  function slider(name, val, min, max, label, valText) {
+    var p = Math.round((val - min) / (max - min) * 100);
+    return '<div class="slider"><div class="between"><label for="' + name + '" class="b7">' + label + '</label><span class="val t24 num">' + valText + '</span></div>' +
+      '<input id="' + name + '" type="range" min="' + min + '" max="' + max + '" step="5" value="' + val + '" data-in="' + name + '" style="--p:' + p + '%" aria-valuetext="' + esc(valText) + '">' +
+      '<div class="ticks num"><span>' + fmt(min) + '</span><span>' + fmt(Math.round((min + max) / 2 / 60) * 60) + '</span><span>' + fmt(max) + '</span></div></div>';
+  }
+  function stationList(svc, i, j, est, opts) {
+    opts = opts || {};
+    var s = SVI[svc], dir = j >= i ? 1 : -1, idx = [], k;
+    for (k = i; ; k += dir) { idx.push(k); if (k === j) break; }
+    return idx.map(function (x, n) {
+      var first = n === 0, last = n === idx.length - 1, name = s.st[x];
+      var mb = metroBadges(svc, name), note = stNote(svc, name);
+      var dot = opts.here === 0 && first ? 'here' : ((first || last) ? 'end' : '');
+      return '<div class="stop"><div class="rail"><i class="' + (first ? 'no' : '') + '"></i><b class="' + dot + '"></b><i class="' + (last ? 'no' : '') + '"></i></div>' +
+        '<div class="info"><div class="col g4 wrapw"><span class="' + (first || last ? 'b8' : 'b6') + '">' + esc(name) + '</span>' +
+        (mb || note ? '<span class="wrapflex" style="gap:6px;align-items:center">' + mb + (note ? '<span class="t12 muted">' + esc(note) + '</span>' : '') + '</span>' : '') +
+        '</div>' + (est != null ? '<span class="b7 num">' + fmt(est + s.per * n) + '</span>' : '') + '</div></div>';
+    }).join('');
+  }
+
+  /* ============================ PANTALLAS: ACCESO ============================ */
+  function trainArt() {
+    return '<svg viewBox="0 0 320 150" width="100%" height="auto" role="img" aria-label="' + L('Ilustración de un tren', 'Train illustration') + '" style="max-height:150px">' +
+      '<rect x="0" y="128" width="320" height="6" rx="3" fill="#13335E"/><rect x="0" y="140" width="320" height="4" rx="2" fill="#13335E"/>' +
+      '<g fill="#C7D4E6">' + [20, 60, 100, 140, 180, 220, 260, 300].map(function (x) { return '<rect x="' + x + '" y="134" width="14" height="4" rx="1"/>'; }).join('') + '</g>' +
+      '<rect x="40" y="28" width="250" height="96" rx="22" fill="#fff"/><rect x="40" y="96" width="250" height="10" fill="#C8102E"/>' +
+      '<rect x="58" y="44" width="54" height="36" rx="8" fill="#0B2545"/><rect x="124" y="44" width="54" height="36" rx="8" fill="#0B2545"/><rect x="190" y="44" width="54" height="36" rx="8" fill="#0B2545"/>' +
+      '<path d="M256 44h18a10 10 0 0 1 10 10v26h-28Z" fill="#0B2545"/><circle cx="276" cy="112" r="5" fill="#FFD166"/>' +
+      '<circle cx="80" cy="126" r="9" fill="#13335E"/><circle cx="250" cy="126" r="9" fill="#13335E"/></svg>';
+  }
+  function vWelcome() {
+    return screen('welcome',
+      '<div class="hero"><div class="between"><span class="t18 disp b8">EFE Trenes</span>' +
+      '<div class="lang" role="group" aria-label="' + L('Idioma', 'Language') + '"><button' + act('setLang', 'es') + pressed(S.lang === 'es') + ' lang="es">ES</button><button' + act('setLang', 'en') + pressed(S.lang === 'en') + ' lang="en">EN</button></div></div>' +
+      trainArt() +
+      '<h1 class="t28 disp b8" style="text-wrap:balance">' + L('Tu tren, a la hora y sin filas', 'Your train, on time and without queues') + '</h1>' +
+      '<p class="t16" style="color:var(--navy-ink)">' + L('Mira cuándo pasa tu tren, paga y recibe avisos en una sola app.', 'See when your train comes, pay and get alerts in one app.') + '</p></div>' +
+      '<div class="scroll" style="padding-top:20px">' +
+      '<button class="btn primary"' + act('go', 'login') + '>' + L('Iniciar sesión', 'Log in') + '</button>' +
+      '<button class="btn outline"' + act('go', 'signup') + '>' + L('Crear cuenta', 'Create account') + '</button>' +
+      '<button class="btn ghost"' + act('guest') + '>' + L('Entrar como invitado', 'Continue as guest') + '</button>' +
+      '<p class="t13 muted" style="text-align:center">' + L('Como invitado puedes usar todas las funciones. Con una cuenta, tus viajes y pasajes quedan guardados en todos tus dispositivos.', 'As a guest you can use every feature. With an account, your trips and tickets are saved on all your devices.') + '</p>' +
+      swRow('toggleBig', S.big, L('Texto grande', 'Large text'), L('También está en el botón Aa de cada pantalla.', 'Also on the Aa button on every screen.')) +
+      '</div>');
+  }
+  function field(id, type, label, val, err, extra) {
+    return '<div class="field"><label class="t14" for="' + id + '">' + label + '</label><input id="' + id + '" type="' + type + '" data-in="' + id + '" value="' + esc(val) + '"' + (err ? ' aria-invalid="true" aria-describedby="' + id + '-e"' : ' aria-invalid="false"') + (extra || '') + '><p class="err" id="' + id + '-e">' + (err || '') + '</p></div>';
+  }
+  function vLogin() {
+    var f = S.fl;
+    return screen('login', topBar(L('Iniciar sesión', 'Log in'), { backAct: 'go', flat: false }).replace('data-act="go"', 'data-act="go" data-arg="welcome"') +
+      '<form class="scroll" data-form="login" novalidate>' +
+      '<p class="t16 muted">' + L('Ingresa con tu correo para ver tus viajes y pasajes guardados.', 'Log in with your email to see your saved trips and tickets.') + '</p>' +
+      field('fl-email', 'email', L('Correo electrónico', 'Email'), f.email, f.err.email, ' autocomplete="email" inputmode="email"') +
+      field('fl-pass', 'password', L('Contraseña', 'Password'), f.pass, f.err.pass, ' autocomplete="current-password"') +
+      '<button type="button" class="link t14" style="align-self:flex-start"' + act('forgot') + '>' + L('¿Olvidaste tu contraseña?', 'Forgot your password?') + '</button>' +
+      '<button type="submit" class="btn primary">' + L('Ingresar', 'Log in') + '</button>' +
+      '<div class="rowf" style="justify-content:center"><span class="t14 muted">' + L('¿No tienes cuenta?', 'No account yet?') + '</span><button type="button" class="link t14"' + act('go', 'signup') + '>' + L('Crear cuenta', 'Create account') + '</button></div>' +
+      '<button type="button" class="btn ghost"' + act('guest') + '>' + L('Entrar como invitado', 'Continue as guest') + '</button>' +
+      '</form>');
+  }
+  function vSignup() {
+    var f = S.fs;
+    return screen('signup', topBar(L('Crear cuenta', 'Create account'), { backAct: 'go' }).replace('data-act="go"', 'data-act="go" data-arg="welcome"') +
+      '<form class="scroll" data-form="signup" novalidate>' +
+      '<p class="t16 muted">' + L('Guarda tus viajes, pasajes y tarjetas en todos tus dispositivos.', 'Keep your trips, tickets and cards on all your devices.') + '</p>' +
+      field('fs-name', 'text', L('Nombre', 'Name'), f.name, f.err.name, ' autocomplete="given-name"') +
+      field('fs-email', 'email', L('Correo electrónico', 'Email'), f.email, f.err.email, ' autocomplete="email" inputmode="email"') +
+      field('fs-pass', 'password', L('Contraseña (mínimo 8 caracteres)', 'Password (at least 8 characters)'), f.pass, f.err.pass, ' autocomplete="new-password"') +
+      '<button type="button" class="check" role="checkbox" aria-checked="' + (f.terms ? 'true' : 'false') + '"' + act('toggleTerms') + '><span class="box">' + (f.terms ? ic('check', 16) : '') + '</span><span class="t14">' + L('Acepto los términos y la política de privacidad', 'I accept the terms and the privacy policy') + '</span></button>' +
+      '<p class="err" id="fs-terms-e">' + (f.err.terms || '') + '</p>' +
+      '<button type="submit" class="btn primary">' + L('Crear cuenta', 'Create account') + '</button>' +
+      '<button type="button" class="btn ghost"' + act('guest') + '>' + L('Entrar como invitado', 'Continue as guest') + '</button>' +
+      '</form>');
+  }
+  function vOnbTipo() {
+    var hi = S.user ? L('Hola, ', 'Hi, ') + esc(S.user.name) + '. ' : '';
+    function opt(k, icon, tileCls, title, sub) {
+      return '<button class="lrow' + (S.traveler === k ? ' sel' : '') + '"' + act('traveler', k) + pressed(S.traveler === k) + ' style="align-items:flex-start"><span class="tile ' + tileCls + '">' + ic(icon) + '</span><span class="grow col g2 wrapw"><span class="t16 b7">' + title + '</span><span class="t13 muted">' + sub + '</span></span></button>';
+    }
+    return screen('onbTipo', topBar(L('Paso 1 de 2', 'Step 1 of 2'), { backAct: 'go' }).replace('data-act="go"', 'data-act="go" data-arg="welcome"') +
+      '<div class="scroll">' +
+      '<h2 class="t28 disp b8">' + hi + L('¿Cómo viajas en tren?', 'How do you travel by train?') + '</h2>' +
+      '<p class="t16 muted">' + L('Así te mostramos primero lo que necesitas. Puedes cambiarlo cuando quieras.', 'We will show you what you need first. You can change it anytime.') + '</p>' +
+      opt('diario', 'clock', 'navy', L('Todos los días', 'Every day'), L('Tren Nos, Limache–Puerto, Biotren, Rancagua. Te muestro cuándo pasa tu tren.', 'Tren Nos, Limache–Puerto, Biotren, Rancagua. I show you when your train comes.')) +
+      opt('ocasional', 'pin', 'red', L('De vez en cuando', 'Now and then'), L('Chillán, Talca–Constitución, Araucanía y más. Te ayudo a comprar y viajar.', 'Chillán, Talca–Constitución, Araucanía and more. I help you buy and travel.')) +
+      '</div><div class="foot"><button class="btn primary"' + act('onbNext') + '>' + L('Continuar', 'Continue') + '</button></div>');
+  }
+  function svcButton(pickKey, svcId) {
+    return '<button class="lrow"' + act('openPicker', pickKey) + '><span class="tile navy">' + ic('train') + '</span><span class="grow col g2 wrapw"><span class="t12 muted b6">' + L('Servicio', 'Service') + '</span><span class="b8">' + esc(SVI[svcId].name) + '</span></span><span class="chev">' + ic('down', 20) + '</span></button>';
+  }
+  function routeBox(fromKey, toKey, swapAct, svc, from, to) {
+    var s = SVI[svc];
+    function side(k, label, i, dotStyle) {
+      var mb = metroBadges(svc, s.st[i]);
+      return '<button' + act('openPicker', k) + ' style="display:flex;gap:12px;align-items:center;padding:12px 16px;min-height:66px;text-align:left;width:100%"><span style="' + dotStyle + ';flex:none"></span><span class="col g2 wrapw"><span class="t12 muted b6">' + label + '</span><span class="t16 b8">' + esc(s.st[i]) + '</span>' + (mb ? '<span>' + mb + '</span>' : '') + '</span></button>';
+    }
+    return '<div class="card" style="padding:0;flex-direction:row;align-items:stretch;gap:0"><div class="grow col">' +
+      side(fromKey, L('Desde', 'From'), from, 'width:14px;height:14px;border-radius:99px;border:3px solid var(--navy)') +
+      '<div class="sep" style="margin-left:42px"></div>' +
+      side(toKey, L('Hacia', 'To'), to, 'width:14px;height:14px;border-radius:99px;background:var(--red)') +
+      '</div><button' + act(swapAct) + ' aria-label="' + L('Intercambiar origen y destino', 'Swap origin and destination') + '" style="width:56px;display:flex;align-items:center;justify-content:center;color:var(--navy);border-left:1px solid var(--line);flex:none">' + ic('swap') + '</button></div>';
+  }
+  function vOnbHabit() {
+    var d = S.draft;
+    return screen('onbHabit', topBar(L('Paso 2 de 2', 'Step 2 of 2'), { backAct: 'go' }).replace('data-act="go"', 'data-act="go" data-arg="onbTipo"') +
+      '<div class="scroll">' +
+      '<h2 class="t24 disp b8">' + L('¿Cuál es tu viaje de todos los días?', 'What is your everyday trip?') + '</h2>' +
+      '<p class="t14 muted">' + L('Lo verás apenas abras la app y te avisaremos si tu tren se atrasa.', 'You will see it as soon as you open the app, and we will tell you if your train is late.') + '</p>' +
+      svcButton('dsvc', d.svc) + routeBox('dfrom', 'dto', 'swapDraft', d.svc, d.from, d.to) +
+      '<p class="sec">' + L('¿Qué días?', 'Which days?') + '</p><div class="wrapflex">' +
+      HDAYS.map(function (x) { return '<button class="chip t14"' + act('draftDays', x[0]) + pressed(d.days === x[0]) + '>' + L(x[1], x[2]) + '</button>'; }).join('') + '</div>' +
+      '<div class="card">' + slider('draftTime', d.time, 300, 1380, L('¿A qué hora sales, más o menos?', 'Roughly what time do you leave?'), fmt(d.time)) + '</div>' +
+      '</div><div class="foot"><button class="btn primary"' + act('finish', '1') + '>' + L('Guardar y empezar', 'Save and start') + '</button><button class="btn ghost"' + act('finish', '0') + '>' + L('Ahora no', 'Not now') + '</button></div>');
+  }
+
+  /* ============================ PANTALLAS: INICIO ============================ */
+  function habitInfo() {
+    var h = S.saved[0];
+    if (!h) return null;
+    var day = dayOf(S.now), base = minsOf(S.now);
+    var ts = deps(h.svc, h.from, h.to, base, day, 3);
+    if (!ts.length) return { h: h, none: true };
+    var a = info(h.svc, h.from, h.to, ts[0]);
+    return { h: h, ts: ts, a: a };
+  }
+  function vHome() {
+    var greet = (function () { var hr = new Date(S.now).getHours(); return hr < 12 ? L('Buenos días', 'Good morning') : (hr < 20 ? L('Buenas tardes', 'Good afternoon') : L('Buenas noches', 'Good evening')); })();
+    var name = S.user ? ', ' + esc(S.user.name) : '';
+    var hi = habitInfo(), main;
+    if (hi && !hi.none) {
+      var h = hi.h, a = hi.a, s = SVI[h.svc], win = s.freq * 60;
+      var frac = Math.max(0, Math.min(1, a.secs / win)), C = 2 * Math.PI * 42;
+      var big = a.min > 0 ? String(a.min) : L('Ya', 'Now');
+      main = '<section class="card next" aria-label="' + L('Tu próximo tren', 'Your next train') + '">' +
+        '<div class="between"><span class="t13 muted b6">' + L('Tu viaje habitual', 'Your usual trip') + ' · ' + esc(s.short) + '</span><span class="pill info">' + L('Simulado', 'Simulated') + '</span></div>' +
+        '<p class="t18 disp b8 wrapw">' + esc(s.st[h.from]) + ' → ' + esc(s.st[h.to]) + '</p>' +
+        '<div class="rowf" style="gap:16px;flex-wrap:wrap"><div class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="var(--soft)" stroke-width="9"/><circle cx="50" cy="50" r="42" fill="none" stroke="' + (a.delayed ? 'var(--warn)' : 'var(--red)') + '" stroke-width="9" stroke-linecap="round" stroke-dasharray="' + (C * frac).toFixed(1) + ' ' + C.toFixed(1) + '"/></svg>' +
+        '<div class="in"><span class="t34 disp b8 num" style="color:var(--navy)">' + big + '</span><span class="t12 b7 muted">' + (a.min > 0 ? 'min' : L('sale', 'leaving')) + '</span></div></div>' +
+        '<div class="col g6 grow"><span class="t14 b7 num">' + (a.delayed ? L('Estimado ', 'Expected ') + fmt(a.est) + ' (' + L('era ', 'was ') + fmt(hi.ts[0]) + ')' : L('Sale a las ', 'Leaves at ') + fmt(hi.ts[0])) + '</span>' +
+        '<span class="t13 muted num">' + L('Faltan ', 'In ') + Math.floor(a.secs / 60) + ':' + pad(a.secs % 60) + '</span>' + pill(!a.delayed, a.delayed ? L('Retrasado 3 min', '3 min late') : L('A tiempo', 'On time')) + '</div></div>' +
+        '<p class="t13 muted num">' + (hi.ts.length > 1 ? L('Luego: ', 'Then: ') + hi.ts.slice(1).map(fmt).join(' · ') : L('Es el último tren del día', 'This is the last train today')) + '</p>' +
+        '<div class="wrapflex"><button class="btn navy sm" style="flex:1 1 160px"' + act('push', 'line') + '>' + L('Ver línea en vivo', 'Live line') + '</button><button class="btn outline sm" style="flex:1 1 100px"' + act('changeHabit') + '>' + L('Cambiar', 'Change') + '</button></div></section>';
+    } else if (hi && hi.none) {
+      main = '<section class="card next"><p class="t18 disp b8">' + L('No hay más trenes hoy', 'No more trains today') + '</p><p class="t14 muted">' + esc(SVI[hi.h.svc].st[hi.h.from]) + ' → ' + esc(SVI[hi.h.svc].st[hi.h.to]) + '. ' + L('Primer tren mañana: ', 'First train tomorrow: ') + fmt(SVI[hi.h.svc].first.lv) + '</p></section>';
+    } else if (S.traveler === 'ocasional') {
+      var tk = S.tickets[0];
+      main = '<section class="card next"><p class="t13 muted b6">' + L('Tu próximo viaje', 'Your next trip') + '</p><p class="t20 disp b8">' + (tk ? esc(tk.route) : L('Aún no tienes un viaje programado', 'No trip planned yet')) + '</p><p class="t14 muted">' + (tk ? esc(tk.date) + ' · ' + tk.time + ' · ' + L('Coche ', 'Car ') + tk.coach + ' · ' + tk.seat : L('Compra tu pasaje de larga distancia y lo tendrás aquí con su código QR.', 'Buy your long-distance ticket and it will be here with its QR code.')) + '</p>' +
+        '<div class="wrapflex"><button class="btn primary sm" style="flex:1 1 160px"' + act(tk ? 'openTicket' : 'goBuy', '0') + '>' + (tk ? L('Ver pasaje', 'View ticket') : L('Comprar pasaje', 'Buy ticket')) + '</button><button class="btn outline sm" style="flex:1 1 100px"' + act('tab', 'viajes') + '>' + L('Planificar', 'Plan') + '</button></div></section>';
+    } else {
+      main = '<section class="card next"><p class="t18 disp b8">' + L('Guarda tu viaje habitual', 'Save your usual trip') + '</p><p class="t14 muted">' + L('Al abrir la app verás de inmediato en cuántos minutos pasa tu tren.', 'When you open the app you will see right away when your train comes.') + '</p><button class="btn primary sm"' + act('tab', 'viajes') + '>' + L('Agregar mi viaje', 'Add my trip') + '</button></section>';
+    }
+    var alt = SV.filter(function (s) { return STATUS[s.id]; }).length;
+    function qa(a, arg, icon, label) { return '<button' + act(a, arg) + '><span class="tile">' + ic(icon) + '</span><span class="b7 wrapw">' + label + '</span></button>'; }
+    return screen('home',
+      '<div class="homehead"><div class="grow col g2"><span class="t13 b6" style="color:var(--navy-ink)">' + greet + name + '</span><span class="t24 disp b8">EFE Trenes</span></div>' + aaBtn(true) + '</div>' +
+      '<div class="scroll homescroll" style="padding-top:0">' + main +
+      '<div class="qa">' + qa('tab', 'viajes', 'pin', L('Planificar viaje', 'Plan a trip')) + qa('tab', 'billetera', 'card', L('Pagar y recargar', 'Pay and top up')) + qa('openQR', '', 'qr', L('Pagar con Bip!QR', 'Pay with Bip!QR')) + qa('tab', 'alertas', 'bell', L('Estado del servicio', 'Service status')) + '</div>' +
+      '<button class="lrow" style="background:var(--warnbg);border-color:transparent;box-shadow:none"' + act('tab', 'alertas') + '><span style="color:var(--warn);display:flex">' + ic('alert') + '</span><span class="grow col g2 wrapw"><span class="b7" style="color:var(--warn)">' + alt + L(' servicios con cambios hoy', ' services with changes today') + '</span><span class="t13">' + L('Tren Nos y Limache–Puerto funcionan con normalidad', 'Tren Nos and Limache–Puerto are running normally') + '</span></span><span style="color:var(--warn);display:flex">' + ic('chev', 20) + '</span></button>' +
+      '<div class="card soft"><div class="rowf" style="align-items:flex-start"><span class="tile navy">' + ic('metro') + '</span><div class="col g4 wrapw"><span class="b8">' + L('Combina con Metro', 'Connect with Metro') + '</span><span class="t13">' + L('En Estación Central (Línea 1) y Lo Valledor (Línea 6), desde el Tren Nos.', 'At Estación Central (Line 1) and Lo Valledor (Line 6), from Tren Nos.') + '</span><span class="wrapflex" style="gap:6px"><span class="metro L1">Metro L1</span><span class="metro L6">Metro L6</span></span></div></div></div>' +
+      '</div>');
+  }
+  function vLine() {
+    var hi = habitInfo();
+    var body;
+    if (!hi || hi.none) body = '<div class="card"><p class="b7">' + L('No hay un tren próximo para tu viaje habitual.', 'There is no upcoming train for your usual trip.') + '</p></div>';
+    else {
+      var h = hi.h, a = hi.a, s = SVI[h.svc], n = Math.abs(h.to - h.from);
+      var terminal = (h.to > h.from && h.from === 0) || (h.to < h.from && h.from === s.st.length - 1);
+      var where = terminal ? (a.min > 0 ? L('Tu tren está en el andén y sale en ', 'Your train is at the platform and leaves in ') + a.min + ' min' : L('Tu tren está saliendo', 'Your train is leaving'))
+        : (a.min > 0 ? L('Tu tren pasa por ', 'Your train reaches ') + esc(s.st[h.from]) + L(' en ', ' in ') + a.min + ' min' : L('Tu tren está en ', 'Your train is at ') + esc(s.st[h.from]));
+      body = '<div class="card"><p class="t18 disp b8 wrapw">' + esc(s.st[h.from]) + ' → ' + esc(s.st[h.to]) + '</p><div>' + pill(!a.delayed, a.delayed ? L('Retrasado 3 min', '3 min late') : L('A tiempo', 'On time')) + '</div>' +
+        '<div class="card soft" style="flex-direction:row;align-items:center;gap:12px"><span style="color:var(--navy);display:flex">' + ic('train') + '</span><span class="col g2 wrapw"><span class="b7" style="color:var(--navy)">' + where + '</span><span class="t13 num">' + L('Llegas a ', 'You arrive at ') + esc(s.st[h.to]) + L(' a las ', ' at ') + fmt(a.est + s.per * n) + ' · ' + stops(n) + '</span></span></div></div>' +
+        '<div class="card tight" style="padding-block:8px">' + stationList(h.svc, h.from, h.to, a.est, { here: 0 }) + '</div>' +
+        swRow('toggleArrive', S.arrive, L('Avisarme antes de bajar', 'Alert me before my stop'), L('Te avisamos una estación antes de tu destino.', 'We alert you one station before your destination.'));
+    }
+    return screen('line', topBar(L('Línea en vivo', 'Live line')) + '<div class="scroll">' + body + '</div>');
+  }
+  /* ============================ PANTALLAS: VIAJES ============================ */
+  function planBase() {
+    var p = S.plan;
+    if (p.when === 'now') return { base: minsOf(S.now), day: dayOf(S.now) };
+    return { base: p.time, day: p.day };
+  }
+  function vPlan() {
+    var p = S.plan, s = SVI[p.svc], n = Math.abs(p.to - p.from), pb = planBase();
+    var seg = '<div class="seg"><button class="t14"' + act('planMode', 'cercania') + pressed(p.mode === 'cercania') + '>' + L('Planificar', 'Plan') + '</button><button class="t14"' + act('planMode', 'larga') + pressed(p.mode === 'larga') + '>' + L('Comprar pasaje', 'Buy ticket') + '</button></div>';
+    var body;
+    if (p.mode === 'cercania') {
+      var ts = deps(p.svc, p.from, p.to, pb.base, pb.day, 4);
+      var saved = S.saved.length ? '<p class="sec">' + L('Mis viajes guardados', 'My saved trips') + '</p>' + S.saved.map(function (x, i) {
+        var on = x.svc === p.svc && x.from === p.from && x.to === p.to, xs = SVI[x.svc];
+        return '<button class="lrow' + (on ? ' sel' : '') + '"' + act('useSaved', i) + pressed(on) + '><span style="color:var(--navy);display:flex">' + ic('clock', 20) + '</span><span class="grow col g2 wrapw"><span class="b7">' + esc(xs.st[x.from]) + ' → ' + esc(xs.st[x.to]) + '</span><span class="t12 muted">' + esc(xs.short) + ' · ' + LL(HDAYS.filter(function (d) { return d[0] === x.days; })[0].slice(1)) + ' · ' + fmt(x.time) + '</span></span></button>';
+      }).join('') : '';
+      var results = ts.length ? ts.map(function (t) {
+        var a = info(p.svc, p.from, p.to, t), now = p.when === 'now';
+        var when = now ? (a.min > 0 ? L('En ', 'In ') + a.min + ' min' : L('Saliendo', 'Leaving')) : L('Llega ', 'Arrives ') + fmt(a.est + s.per * n);
+        return '<button class="lrow"' + act('pickTrain', t) + ' aria-label="' + L('Tren de las ', 'Train at ') + fmt(a.est) + '"><span class="col g2" style="min-width:64px"><span class="t20 disp b8 num" style="color:var(--navy)">' + fmt(a.est) + '</span><span class="t12 muted num">' + (a.delayed ? L('Era ', 'Was ') + fmt(t) : (now ? L('Llega ', 'Arr. ') + fmt(a.est + s.per * n) : '')) + '</span></span><span class="grow col g4" style="align-items:flex-start"><span class="b7">' + when + '</span>' + pill(!a.delayed, a.delayed ? L('Retrasado 3 min', '3 min late') : L('A tiempo', 'On time')) + '</span><span class="chev">' + ic('chev', 20) + '</span></button>';
+      }).join('') : '<div class="card"><p class="b7">' + L('No hay trenes a esa hora.', 'No trains at that time.') + '</p><p class="t13 muted">' + L('Primer tren: ', 'First train: ') + fmt(s.first[pb.day]) + ' · ' + L('Último: ', 'Last: ') + fmt(s.last) + '</p></div>';
+      var fare = '';
+      if (p.svc === 'nos') {
+        var cur = fareNos(pb.base, pb.day), nowMode = p.when === 'now';
+        fare = '<div class="card"><div class="between"><p class="sec">' + L('Tarifa según horario', 'Fare by time of day') + '</p>' + (cur ? '<span class="pill info num">' + (nowMode ? L('Ahora', 'Now') : fmt(pb.base)) + ': ' + fareName(cur) + '</span>' : '<span class="pill warn">' + L('Fuera de horario', 'Outside service hours') + '</span>') + '</div>' +
+          fareBoxes(cur, nowMode ? L('Ahora', 'Now') : L('A esa hora', 'At that time')) +
+          '<p class="t12 muted">' + L('Se destaca la tarifa que corresponde a la hora en que viajas. Fines de semana y festivos: Valle. Estudiantes: $260. Fuente: efe.cl.', 'The fare for the time you travel is highlighted. Weekends and holidays: off-peak. Students: $260. Source: efe.cl.') + '</p></div>';
+      } else {
+        fare = '<div class="card soft"><p class="b7">' + L('Tarifa de este servicio', 'Fare for this service') + '</p><p class="t13">' + L('Depende del tramo que recorres. [Tarifas por confirmar en efe.cl]', 'Depends on the distance you travel. [Fares to be confirmed on efe.cl]') + '</p></div>';
+      }
+      body = saved + svcButton('svc', p.svc) + routeBox('from', 'to', 'swapPlan', p.svc, p.from, p.to) +
+        '<div class="card"><div class="seg"><button class="t13"' + act('when', 'now') + pressed(p.when === 'now') + '>' + L('Salir ahora', 'Leave now') + '</button><button class="t13"' + act('when', 'pick') + pressed(p.when === 'pick') + '>' + L('Elegir hora', 'Pick a time') + '</button></div>' +
+        (p.when === 'pick' ? '<div class="wrapflex">' + PDAYS.map(function (d) { return '<button class="chip t13"' + act('planDay', d[0]) + pressed(p.day === d[0]) + '>' + L(d[1], d[2]) + '</button>'; }).join('') + '</div>' + slider('planTime', p.time, 300, 1380, L('Salir a las', 'Leave at'), fmt(p.time)) : '<p class="t13 muted">' + L('Mostrando los próximos trenes desde ahora.', 'Showing the next trains from now.') + '</p>') + '</div>' +
+        '<div class="between"><p class="sec">' + (p.when === 'now' ? L('Próximos trenes', 'Next trains') : L('Trenes desde las ', 'Trains from ') + fmt(p.time)) + '</p><p class="t13 muted">' + stops(n) + ' · ' + (s.per * n) + ' min</p></div>' + results +
+        '<p class="t12 muted">' + (s.sim ? L('Horarios y tiempos simulados para el prototipo.', 'Times simulated for the prototype.') : L('Frecuencia simulada; primer y último tren y 27 min Nos–Estación Central según la app de EFE.', 'Simulated frequency; first/last train and 27 min Nos–Estación Central as in the EFE app.')) + '</p>' + fare;
+    } else {
+      body = vBuyBody();
+    }
+    return screen('plan', topBar(L('Viajes', 'Trips'), { root: true }) + '<div class="scroll">' + seg + body + '</div>');
+  }
+  function steps(cur) {
+    return '<div class="steps">' + [L('Tren', 'Train'), L('Asiento', 'Seat'), L('Pago', 'Payment')].map(function (l, i) {
+      return '<div class="' + (i + 1 <= cur ? 'on' : '') + '"><div class="bar"></div><span class="t12 ' + (i + 1 === cur ? 'b8' : 'b6 muted') + '">' + (i + 1) + '. ' + l + '</span></div>';
+    }).join('') + '</div>';
+  }
+  function ldDates() { return [L('Hoy', 'Today'), L('Mañana', 'Tomorrow'), L('Sábado', 'Saturday')]; }
+  function ldTrains() { var ld = S.ld; return deps('ch', ld.from, ld.to, ld.date === 0 ? minsOf(S.now) : 0, ld.date === 2 ? 'sab' : 'lv', 4); }
+  function vBuyBody() {
+    var ld = S.ld, ch = SVI.ch, trains = ldTrains(), n = Math.abs(ld.to - ld.from);
+    return steps(1) + '<div class="card soft"><p class="t13">' + L('Venta de pasajes con asiento para ', 'Seat tickets for ') + '<b>' + ch.name + '</b>. ' + L('Elige entre cualquier par de estaciones.', 'Choose any pair of stations.') + '</p></div>' +
+      routeBox('ldfrom', 'ldto', 'swapLd', 'ch', ld.from, ld.to) +
+      '<p class="sec">' + L('¿Cuándo viajas?', 'When are you travelling?') + '</p><div class="wrapflex">' + ldDates().map(function (d, i) { return '<button class="chip t14"' + act('ldDate', i) + pressed(ld.date === i) + '>' + d + '</button>'; }).join('') + '</div>' +
+      '<p class="sec">' + L('Trenes disponibles', 'Available trains') + '</p>' +
+      (trains.length ? trains.map(function (t, i) {
+        return '<button class="lrow"' + act('ldTrain', t) + '><span class="col g2" style="min-width:64px"><span class="t20 disp b8 num" style="color:var(--navy)">' + fmt(t) + '</span><span class="t12 muted num">' + L('Llega ', 'Arr. ') + fmt(t + ch.per * n) + '</span></span><span class="grow col g2"><span class="b7">' + [42, 18, 6, 27][i] + L(' asientos disponibles', ' seats available') + '</span><span class="t12 muted">' + L('Desde $[tarifa]', 'From $[fare]') + '</span></span><span class="chev">' + ic('chev', 20) + '</span></button>';
+      }).join('') : '<div class="card"><p class="b7">' + L('No quedan trenes hoy. Prueba mañana.', 'No trains left today. Try tomorrow.') + '</p></div>') +
+      '<p class="t12 muted">' + L('Estaciones según efe.cl. Horarios, asientos y tarifas de ejemplo.', 'Stations as on efe.cl. Times, seats and fares are examples.') + '</p>';
+  }
+  function vTrip() {
+    var p = S.plan, s = SVI[p.svc], n = Math.abs(p.to - p.from);
+    if (p.selT == null) return screen('trip', topBar(L('Tu viaje', 'Your trip')) + '<div class="scroll"></div>');
+    var a = info(p.svc, p.from, p.to, p.selT);
+    var isSaved = S.saved.some(function (x) { return x.svc === p.svc && x.from === p.from && x.to === p.to; });
+    var metroOn = [p.from, p.to].map(function (i) { return s.st[i]; }).filter(function (x) { return s.metro[x]; });
+    return screen('trip', topBar(L('Tu viaje', 'Your trip')) + '<div class="scroll">' +
+      '<div class="card navy"><p class="t13 b6" style="color:var(--navy-ink)">' + esc(s.name) + '</p><p class="t18 disp b8 wrapw">' + esc(s.st[p.from]) + ' → ' + esc(s.st[p.to]) + '</p><p class="t28 disp b8 num">' + L('Sale ', 'Leaves ') + fmt(a.est) + '</p><p class="t13 num" style="color:var(--navy-ink)">' + stops(n) + ' · ' + (s.per * n) + ' min · ' + L('llega ', 'arrives ') + fmt(a.est + s.per * n) + '</p><div>' + pill(!a.delayed, a.delayed ? L('Retrasado 3 min', '3 min late') : L('A tiempo', 'On time')) + '</div></div>' +
+      (metroOn.length ? '<div class="card soft"><div class="rowf" style="align-items:flex-start"><span style="color:var(--navy);display:flex">' + ic('metro') + '</span><span class="col g4 wrapw"><span class="b7">' + L('Combinación con Metro', 'Metro connection') + '</span>' + metroOn.map(function (x) { return '<span class="t13">' + esc(x) + ' ' + metroBadges(p.svc, x) + '</span>'; }).join('') + '</span></div></div>' : '') +
+      '<div class="card tight" style="padding-block:8px">' + stationList(p.svc, p.from, p.to, a.est) + '</div>' +
+      '<div class="card"><p class="sec">' + L('Guardar como viaje habitual', 'Save as usual trip') + '</p><p class="t13 muted">' + L('Aparecerá en Inicio con su cuenta regresiva y te avisaremos si se atrasa.', 'It will show on Home with a countdown and we will alert you if it is late.') + '</p><div class="wrapflex">' +
+      HDAYS.map(function (d) { return '<button class="chip t13"' + act('saveDays', d[0]) + pressed(S.saveDays === d[0]) + '>' + L(d[1], d[2]) + '</button>'; }).join('') + '</div>' +
+      '<button class="btn primary"' + act('saveTrip') + '>' + (isSaved ? L('Actualizar viaje guardado', 'Update saved trip') : L('Guardar viaje', 'Save trip')) + '</button></div>' +
+      swRow('toggleArrive', S.arrive, L('Avisarme antes de bajar', 'Alert me before my stop'), L('Modo viaje: te avisamos una estación antes.', 'Trip mode: we alert you one station before.')) +
+      '</div>');
+  }
+  function seatInfo(r, Lt) {
+    var ld = S.ld, ci = 'ABCD'.indexOf(Lt), id = r + Lt;
+    var taken = ((r * 7 + ci * 3 + ld.coach) % 5 === 0) || ((r + ci + ld.coach) % 6 === 0);
+    return { id: id, taken: taken, sel: ld.seat === id };
+  }
+  function vSeat() {
+    var ld = S.ld, ch = SVI.ch;
+    var head = '<div class="seatrow"><span style="width:26px"></span>' + ['A', 'B'].map(function (x) { return '<span class="t12 b7 muted" style="width:44px;text-align:center">' + x + '</span>'; }).join('') + '<span style="width:18px"></span>' + ['C', 'D'].map(function (x) { return '<span class="t12 b7 muted" style="width:44px;text-align:center">' + x + '</span>'; }).join('') + '</div>';
+    var rows = '';
+    for (var r = 1; r <= 10; r++) {
+      rows += '<div class="seatrow"><span class="t12 b6 muted num" style="width:26px;text-align:right">' + r + '</span>' + ['A', 'B', 'gap', 'C', 'D'].map(function (Lt) {
+        if (Lt === 'gap') return '<span style="width:18px"></span>';
+        var si = seatInfo(r, Lt);
+        return '<button class="seat"' + act('seat', si.id) + pressed(si.sel) + (si.taken ? ' disabled' : '') + ' aria-label="' + L('Asiento ', 'Seat ') + si.id + ((Lt === 'A' || Lt === 'D') ? L(', ventana', ', window') : L(', pasillo', ', aisle')) + (si.taken ? L(', ocupado', ', taken') : (si.sel ? L(', elegido', ', selected') : L(', libre', ', free'))) + '">' + (si.sel ? si.id : (si.taken ? '' : Lt)) + '</button>';
+      }).join('') + '</div>';
+    }
+    var chosen = ld.seat ? L('Coche ', 'Car ') + ld.coach + ' · ' + L('Asiento ', 'Seat ') + ld.seat + ('AD'.indexOf(ld.seat.slice(-1)) >= 0 ? L(' (ventana)', ' (window)') : L(' (pasillo)', ' (aisle)')) : L('Elige un asiento libre', 'Choose a free seat');
+    return screen('seat', topBar(L('Elige tu asiento', 'Choose your seat')) + '<div class="scroll">' + steps(2) +
+      '<p class="t14 muted num">' + esc(ch.st[ld.from]) + ' → ' + esc(ch.st[ld.to]) + ' · ' + ldDates()[ld.date] + ' · ' + fmt(ld.train) + '</p>' +
+      '<div class="wrapflex">' + [3, 4, 5].map(function (c) { return '<button class="chip t14"' + act('coach', c) + pressed(ld.coach === c) + '>' + L('Coche ', 'Car ') + c + '</button>'; }).join('') + '</div>' +
+      '<div class="card" style="align-items:center"><div class="seats">' + head + rows + '</div>' +
+      '<div class="wrapflex t12" style="justify-content:center;gap:14px"><span class="rowf" style="gap:6px"><span style="width:16px;height:16px;border-radius:4px;background:var(--navy)"></span>' + L('Elegido', 'Selected') + '</span><span class="rowf" style="gap:6px"><span style="width:16px;height:16px;border-radius:4px;border:1.5px solid var(--navy)"></span>' + L('Libre', 'Free') + '</span><span class="rowf" style="gap:6px"><span style="width:16px;height:16px;border-radius:4px;background:var(--line)"></span>' + L('Ocupado', 'Taken') + '</span><span class="muted">' + L('A y D: ventana', 'A and D: window') + '</span></div></div></div>' +
+      '<div class="foot"><p class="t13 muted" style="text-align:center">' + chosen + '</p><button class="btn primary"' + act('push', 'pay') + (ld.seat ? '' : ' disabled') + '>' + L('Continuar al pago', 'Continue to payment') + '</button></div>');
+  }
+  function vPay() {
+    var ld = S.ld, ch = SVI.ch;
+    var pays = [L('Débito', 'Debit'), L('Crédito', 'Credit'), L('Billetera del teléfono', 'Phone wallet')];
+    return screen('pay', topBar(L('Pago', 'Payment')) + '<div class="scroll">' + steps(3) +
+      '<div class="card"><p class="t16 disp b8 wrapw">' + esc(ch.st[ld.from]) + ' → ' + esc(ch.st[ld.to]) + '</p><p class="t14 muted num">' + ldDates()[ld.date] + ' · ' + L('Sale ', 'Leaves ') + fmt(ld.train) + '</p><p class="t14 muted">' + L('Coche ', 'Car ') + ld.coach + ' · ' + L('Asiento ', 'Seat ') + (ld.seat || '') + '</p><div class="sep"></div><div class="between"><span class="b7">Total</span><span class="b8">$[' + L('tarifa', 'fare') + ']</span></div></div>' +
+      '<p class="sec">' + L('¿Cómo quieres pagar?', 'How do you want to pay?') + '</p>' +
+      pays.map(function (m, i) { var on = ld.pay === i; return '<button class="lrow' + (on ? ' sel' : '') + '"' + act('ldPay', i) + pressed(on) + '><span style="width:22px;height:22px;border-radius:99px;border:2px solid var(--navy);display:flex;align-items:center;justify-content:center;flex:none">' + (on ? '<span style="width:10px;height:10px;border-radius:99px;background:var(--navy)"></span>' : '') + '</span><span class="b6">' + m + '</span></button>'; }).join('') +
+      swRow('toggleLdGuest', ld.guest, L('Enviar copia a mi correo', 'Send a copy to my email'), L('Además queda guardado en tu Billetera.', 'It is also saved in your Wallet.')) +
+      '</div><div class="foot"><button class="btn primary"' + act('confirmPay') + '>' + L('Pagar', 'Pay') + ' $[' + L('tarifa', 'fare') + ']</button></div>');
+  }
+  function vLdDone() {
+    var tk = S.tickets[0] || {};
+    return screen('ldDone', topBar(L('Compra lista', 'Purchase complete'), { backAct: 'backToViajes' }) + '<div class="scroll" style="align-items:center;text-align:center;padding-top:32px">' +
+      '<div style="width:80px;height:80px;border-radius:99px;background:var(--okbg);color:var(--ok);display:flex;align-items:center;justify-content:center">' + ic('check', 40) + '</div>' +
+      '<h2 class="t24 disp b8">' + L('Tu pasaje está listo', 'Your ticket is ready') + '</h2><p class="muted">' + L('Lo guardamos en tu Billetera. No necesitas imprimirlo: muestra el código QR al subir.', 'It is in your Wallet. No need to print it: show the QR code when boarding.') + '</p>' +
+      '<div class="card" style="width:100%;text-align:left"><p class="b8">' + esc(tk.route || '') + '</p><p class="t14 num">' + esc(tk.date || '') + ' · ' + (tk.time || '') + '</p><p class="t14">' + L('Coche ', 'Car ') + (tk.coach || '') + ' · ' + L('Asiento ', 'Seat ') + (tk.seat || '') + '</p></div></div>' +
+      '<div class="foot"><button class="btn primary"' + act('openTicket', '0') + '>' + L('Ver mi pasaje', 'View my ticket') + '</button><button class="btn ghost"' + act('backToViajes') + '>' + L('Volver a Viajes', 'Back to Trips') + '</button></div>');
+  }
+
+  /* ============================ PANTALLAS: BILLETERA ============================ */
+  function vWallet() {
+    var w = S.wallet, cards = S.walletTab === 'cards';
+    var seg = '<div class="seg"><button class="t14"' + act('wTab', 'cards') + pressed(cards) + '>' + L('Tarjetas', 'Cards') + '</button><button class="t14"' + act('wTab', 'qr') + pressed(S.walletTab === 'qr') + '>Bip!QR</button><button class="t14"' + act('wTab', 'tickets') + pressed(S.walletTab === 'tickets') + '>' + L('Pasajes', 'Tickets') + (S.tickets.length ? ' (' + S.tickets.length + ')' : '') + '</button></div>';
+    var body;
+    if (S.walletTab === 'qr') {
+      body = qrBody();
+    } else if (cards) {
+      function wc(bg, title, sub, bal, k) {
+        return '<section class="wallet-card" style="background-color:' + bg + '"><div class="between"><div class="col g2 wrapw"><span class="b8">' + title + '</span><span class="t13" style="color:var(--navy-ink)">' + sub + '</span></div>' + ic('card', 26) + '</div><div class="between" style="align-items:flex-end"><div class="col g2"><span class="t12" style="color:var(--navy-ink)">' + L('Saldo', 'Balance') + '</span><span class="t28 disp b8 num">' + money(bal) + '</span></div><button class="btn white sm auto"' + act('recharge', k) + '>' + L('Recargar', 'Top up') + '</button></div></section>';
+      }
+      var pay = [['Tren Nos', L('Bip!QR (propuesta), tarjeta bip!, tarjeta bancaria o celular', 'Bip!QR (proposal), bip! card, bank card or phone')], ['Limache–Puerto', L('Tarjeta EFE, tarjeta bancaria, celular o QR de BancoEstado', 'EFE card, bank card, phone or BancoEstado QR')], ['Rancagua – E. Central', L('Tarjeta del servicio, tarjeta bancaria o celular', 'Service card, bank card or phone')], ['Biotren', L('Tarjeta del servicio · [confirmar otros medios]', 'Service card · [other methods to confirm]')], [L('Larga distancia', 'Long distance'), L('Pasaje con asiento: cómpralo en Viajes', 'Seat ticket: buy it in Trips')]];
+      body = wc('var(--navy)', L('Tarjeta EFE', 'EFE card'), 'Limache–Puerto · •••• 4821', w.efe, 'efe') +
+        wc('#1B4D7A', 'Tarjeta bip!', L('Tren Nos, Metro y buses', 'Tren Nos, Metro and buses') + ' · •••• 0937', w.bip, 'bip') +
+        '<div class="card"><div class="rowf" style="align-items:flex-start"><span class="tile">' + ic('phone') + '</span><div class="col g4 wrapw"><span class="b7">' + L('Tarjeta bancaria o celular', 'Bank card or phone') + '</span><span class="t13 muted">' + L('Sin recargar: acércala al validador en Tren Nos, Limache–Puerto y Rancagua – Estación Central.', 'No top-up needed: tap it on the validator on Tren Nos, Limache–Puerto and Rancagua – Estación Central.') + '</span></div></div></div>' +
+        '<button class="btn outline"' + act('push', 'addCard') + '>' + ic('plus', 20) + L('Agregar tarjeta', 'Add card') + '</button>' +
+        '<p class="sec">' + L('¿Cómo pago en cada servicio?', 'How do I pay on each service?') + '</p><div class="card tight">' + pay.map(function (x) { return '<div class="irow"><span class="b7">' + x[0] + '</span><span class="t13 muted wrapw" style="flex:1 1 180px">' + x[1] + '</span></div>'; }).join('') + '</div>' +
+        '<p class="t12 muted">' + L('Saldos y números de tarjeta de ejemplo.', 'Example balances and card numbers.') + '</p>';
+    } else {
+      body = S.tickets.length ? S.tickets.map(function (t, i) {
+        return '<button class="lrow"' + act('openTicket', i) + '><span class="tile navy">' + ic('qr') + '</span><span class="grow col g2 wrapw"><span class="b8">' + esc(t.route) + '</span><span class="t13 muted num">' + esc(t.date) + ' · ' + t.time + ' · ' + L('Coche ', 'Car ') + t.coach + ' · ' + t.seat + '</span></span><span class="chev">' + ic('chev', 20) + '</span></button>';
+      }).join('') : '<div class="card" style="align-items:center;text-align:center;padding:28px 20px"><span class="tile" style="width:56px;height:56px">' + ic('ticket', 28) + '</span><p class="t16 b8">' + L('Aún no tienes pasajes', 'No tickets yet') + '</p><p class="t14 muted">' + L('Compra tu pasaje de larga distancia y queda guardado con su código QR.', 'Buy your long-distance ticket and it is saved with its QR code.') + '</p><button class="btn primary sm auto"' + act('goBuy') + '>' + L('Comprar pasaje', 'Buy ticket') + '</button></div>';
+    }
+    return screen('wallet', topBar(L('Billetera', 'Wallet'), { root: true }) + '<div class="scroll">' + seg + body + '</div>');
+  }
+  function bqPays() { return [[L('Tarjeta de débito', 'Debit card'), '•••• 1234'], [L('Tarjeta de crédito', 'Credit card'), '•••• 5678'], ['CuentaRUT BancoEstado', '•••• 9012']]; }
+  function radioRows(list, cur, a) {
+    return list.map(function (m, i) {
+      var on = cur === i;
+      return '<button class="lrow' + (on ? ' sel' : '') + '"' + act(a, i) + pressed(on) + '><span style="width:22px;height:22px;border-radius:99px;border:2px solid var(--navy);display:flex;align-items:center;justify-content:center;flex:none">' + (on ? '<span style="width:10px;height:10px;border-radius:99px;background:var(--navy)"></span>' : '') + '</span><span class="grow col g2 wrapw"><span class="b7">' + m[0] + '</span><span class="t13 muted">' + m[1] + '</span></span></button>';
+    }).join('');
+  }
+  function qrBody() {
+    var q = S.bq, now = S.now, cur = fareNos(minsOf(now), dayOf(now)), pm = bqPays()[q.pay];
+    var head = '<div class="card navy"><div class="rowf" style="align-items:flex-start"><span class="tile red">' + ic('qr') + '</span><div class="col g2 wrapw"><span class="t18 disp b8">Bip!QR · Tren Nos</span><span class="t13" style="color:var(--navy-ink)">' + L('Paga el Tren Nos mostrando un código QR en tu celular. Sin tarjeta física y sin recargar: se cobra a tu tarjeta bancaria.', 'Pay for Tren Nos by showing a QR code on your phone. No physical card and no top-ups: it is charged to your bank card.') + '</span></div></div></div>';
+    var note = '<p class="t12 muted">' + L('Propuesta inspirada en Bip!QR de la app Red Movilidad. Tarjetas y montos de ejemplo.', 'Proposal inspired by Bip!QR in the Red Movilidad app. Example cards and amounts.') + '</p>';
+    if (!q.on) {
+      var how = [L('Elige con qué pagar y activa Bip!QR.', 'Choose how to pay and turn on Bip!QR.'), L('En la estación, abre Billetera › Bip!QR.', 'At the station, open Wallet › Bip!QR.'), L('Acerca la pantalla al lector del torniquete. Se cobra la tarifa del horario.', 'Hold the screen to the turnstile reader. You pay the fare for that time.')];
+      return head + '<p class="sec">' + L('¿Con qué quieres pagar?', 'How do you want to pay?') + '</p>' + radioRows(bqPays(), q.pay, 'bqPay') +
+        '<div class="card"><p class="sec">' + L('Cómo funciona', 'How it works') + '</p>' + how.map(function (x, j) { return '<div class="rowf" style="align-items:flex-start"><span class="t13 b8" style="width:26px;height:26px;border-radius:99px;background:var(--soft);color:var(--navy);display:flex;align-items:center;justify-content:center;flex:none">' + (j + 1) + '</span><span class="t14 wrapw">' + x + '</span></div>'; }).join('') + '</div>' +
+        '<button class="btn primary"' + act('bqOn') + '>' + L('Activar Bip!QR', 'Turn on Bip!QR') + '</button>' + note;
+    }
+    var secs = 30 - Math.floor(now / 1000) % 30, seed = Math.floor(now / 30000);
+    var moves = q.uses.length ? '<p class="sec">' + L('Últimos viajes', 'Recent trips') + '</p><div class="card tight">' + q.uses.slice(0, 5).map(function (u) { return '<div class="irow"><span class="col g2"><span class="b7">Tren Nos · ' + fareName(u.f) + '</span><span class="t12 muted num">' + L('Hoy ', 'Today ') + fmt(minsOf(u.at)) + '</span></span><span class="b8 num">' + money(u.amt) + '</span></div>'; }).join('') + '</div>' : '';
+    return head +
+      '<section class="card" style="align-items:center;text-align:center"><div class="between" style="width:100%"><span class="b8">' + L('Tu código', 'Your code') + '</span>' + pill(true, L('Activo', 'Active')) + '</div><div class="qr" role="img" aria-label="' + L('Código Bip!QR para pagar el Tren Nos', 'Bip!QR code to pay for Tren Nos') + '">' + qrCells(seed) + '</div>' +
+      '<p class="t16 b7">' + L('Acerca la pantalla al lector del torniquete', 'Hold the screen to the turnstile reader') + '</p><p class="t13 muted num">' + L('Por seguridad, el código cambia en ', 'For security, the code changes in ') + secs + ' s</p></section>' +
+      '<div class="card"><div class="between"><p class="sec">' + L('Tarifa ahora', 'Fare now') + '</p>' + (cur ? '<span class="t20 disp b8 num">' + money(FARE[cur]) + '</span>' : pill(false, L('Fuera de horario', 'Outside service hours'))) + '</div>' + fareBoxes(cur, L('Ahora', 'Now')) +
+      '<p class="t13 muted">' + L('Pagas con: ', 'Paying with: ') + pm[0] + ' ' + pm[1] + '</p></div>' +
+      '<button class="btn ghost test"' + act('bqUse') + '>' + L('Simular pago en el torniquete (testeo)', 'Simulate paying at the turnstile (testing)') + '</button>' +
+      moves + '<button class="btn outline"' + act('bqOff') + '>' + L('Cambiar medio de pago', 'Change payment method') + '</button>' + note;
+  }
+  function vRecharge() {
+    var c = S.rc, name = c.card === 'efe' ? L('Tarjeta EFE', 'EFE card') : 'Tarjeta bip!';
+    var pays = [L('Débito', 'Debit'), L('Crédito', 'Credit'), 'BancoEstado'];
+    return screen('recharge', topBar(L('Recargar', 'Top up')) + '<div class="scroll">' +
+      '<div class="card"><div class="between"><span class="b8">' + name + '</span><span class="col g2" style="align-items:flex-end"><span class="t12 muted">' + L('Saldo actual', 'Current balance') + '</span><span class="t18 disp b8 num">' + money(S.wallet[c.card]) + '</span></span></div></div>' +
+      '<p class="sec">' + L('¿Cuánto quieres cargar?', 'How much do you want to add?') + '</p><div class="qa">' +
+      [2000, 3000, 5000, 10000].map(function (v) { var on = c.amount === v; return '<button' + act('amount', v) + pressed(on) + ' style="min-height:56px;align-items:center;justify-content:center;' + (on ? 'background:var(--navy);color:#fff;border-color:var(--navy)' : '') + '"><span class="t18 disp b8 num">' + money(v) + '</span></button>'; }).join('') + '</div>' +
+      '<p class="sec">' + L('Pagar con', 'Pay with') + '</p><div class="wrapflex">' + pays.map(function (m, i) { return '<button class="chip t14"' + act('rcPay', i) + pressed(c.pay === i) + '>' + m + '</button>'; }).join('') + '</div>' +
+      '<div class="card soft" style="flex-direction:row;align-items:center"><span style="color:var(--navy);display:flex">' + ic('info', 20) + '</span><span class="t13">' + L('Si el pago falla, te decimos por qué y no se descuenta nada.', 'If the payment fails, we tell you why and nothing is charged.') + '</span></div>' +
+      (c.failed ? '<div class="card errcard" role="alert"><div class="rowf" style="align-items:flex-start"><span style="color:var(--red);display:flex">' + ic('alert') + '</span><div class="col g4 wrapw"><span class="b8" style="color:var(--red)">' + L('Pago rechazado', 'Payment declined') + '</span><span class="t13">' + L('Tu banco rechazó el pago de ', 'Your bank declined the payment of ') + money(c.amount) + L('. No se descontó dinero.', '. No money was taken.') + '</span></div></div><button class="btn primary sm"' + act('help', 'pago') + '>' + ic('chat', 18) + L('Reportar el problema', 'Report the problem') + '</button></div>'
+        : '<button class="btn ghost test"' + act('rcFail') + '>' + L('Simular pago rechazado (testeo)', 'Simulate a declined payment (testing)') + '</button>') +
+      '</div><div class="foot"><button class="btn primary num"' + act('doRecharge') + '>' + L('Pagar ', 'Pay ') + money(c.amount) + '</button></div>');
+  }
+  function vRcDone() {
+    var c = S.rc, name = c.card === 'efe' ? L('Tarjeta EFE', 'EFE card') : 'Tarjeta bip!';
+    return screen('rcDone', topBar(L('Recarga lista', 'Top-up complete'), { backAct: 'backWallet' }) + '<div class="scroll" style="align-items:center;text-align:center;padding-top:32px">' +
+      '<div style="width:80px;height:80px;border-radius:99px;background:var(--okbg);color:var(--ok);display:flex;align-items:center;justify-content:center">' + ic('check', 40) + '</div>' +
+      '<h2 class="t24 disp b8">' + L('Recarga lista', 'Top-up complete') + '</h2><p class="muted">' + L('Cargaste ', 'You added ') + money(c.added) + L(' a tu ', ' to your ') + name + '.</p>' +
+      '<div class="card" style="width:100%"><div class="between"><span class="b7">' + L('Nuevo saldo', 'New balance') + '</span><span class="t24 disp b8 num" style="color:var(--navy)">' + money(S.wallet[c.card]) + '</span></div></div></div>' +
+      '<div class="foot"><button class="btn primary"' + act('backWallet') + '>' + L('Volver a Billetera', 'Back to Wallet') + '</button></div>');
+  }
+  function qrCells(seed) {
+    var cells = '';
+    for (var y = 0; y < 21; y++) for (var x = 0; x < 21; x++) {
+      var fx = -1, fy = -1, dark;
+      if (x < 7 && y < 7) { fx = 0; fy = 0; } else if (x >= 14 && y < 7) { fx = 14; fy = 0; } else if (x < 7 && y >= 14) { fx = 0; fy = 14; }
+      if (fx >= 0) { var lx = x - fx, ly = y - fy; dark = lx === 0 || ly === 0 || lx === 6 || ly === 6 || (lx >= 2 && lx <= 4 && ly >= 2 && ly <= 4); }
+      else if ((x === 7 && y < 8) || (y === 7 && x < 8) || (x === 13 && y < 8) || (y === 7 && x > 12) || (y === 13 && x < 8) || (x === 7 && y > 12)) dark = false;
+      else dark = ((x * 31 + y * 17 + x * y + seed) % 7) < 3;
+      cells += '<i' + (dark ? ' class="d"' : '') + '></i>';
+    }
+    return cells;
+  }
+  function vTicket() {
+    var t = S.tickets[S.tkIdx] || {};
+    var seed = String(t.code || 'EFE').split('').reduce(function (a, c) { return a + c.charCodeAt(0); }, 0);
+    var cells = qrCells(seed);
+    return screen('ticket', topBar(L('Tu pasaje', 'Your ticket')) + '<div class="scroll">' +
+      '<section class="card" style="padding:0;overflow:hidden;gap:0"><div style="background:var(--navy);color:#fff;padding:16px" class="col g2"><span class="t18 disp b8 wrapw">' + esc(t.route || '') + '</span><span class="t14 num" style="color:var(--navy-ink)">' + esc(t.date || '') + ' · ' + L('Sale ', 'Leaves ') + (t.time || '') + '</span></div>' +
+      '<div class="col g12" style="padding:20px 16px;align-items:center"><div class="qr" role="img" aria-label="' + L('Código QR del pasaje', 'Ticket QR code') + '">' + cells + '</div><p class="t14 muted">' + L('Muestra este código al subir', 'Show this code when boarding') + '</p>' +
+      '<div class="kv" style="width:100%"><div><span class="t12 muted">' + L('Coche', 'Car') + '</span><span class="t18 b8">' + (t.coach || '') + '</span></div><div><span class="t12 muted">' + L('Asiento', 'Seat') + '</span><span class="t18 b8">' + (t.seat || '') + '</span></div><div><span class="t12 muted">' + L('Código', 'Code') + '</span><span class="t14 b8">' + (t.code || '') + '</span></div></div></div></section>' +
+      '<button class="btn navy"' + act('toast', 'wallet') + '>' + L('Agregar a la billetera del teléfono', 'Add to phone wallet') + '</button><button class="btn outline"' + act('toast', 'change') + '>' + L('Cambiar o anular', 'Change or cancel') + '</button></div>');
+  }
+  function vAddCard() {
+    return screen('addCard', topBar(L('Agregar tarjeta', 'Add card')) + '<div class="scroll"><p class="muted">' + L('Una sola Billetera para todos los servicios. La app reconoce a qué servicio pertenece tu tarjeta.', 'One Wallet for every service. The app recognises which service your card belongs to.') + '</p>' +
+      navRow('toast', 'scan', 'scan', L('Acercar la tarjeta al teléfono', 'Hold the card to your phone'), L('Lectura sin contacto, en 2 segundos', 'Contactless, in 2 seconds')) +
+      navRow('toast', 'type', 'card', L('Escribir el número', 'Type the number'), L('Está al reverso de la tarjeta', 'It is on the back of the card')) +
+      '<div class="card soft" style="flex-direction:row;align-items:center"><span style="color:var(--navy);display:flex">' + ic('info', 20) + '</span><span class="t13">' + L('¿No tienes tarjeta? En Tren Nos, Limache–Puerto y Rancagua – Estación Central puedes pagar con tarjeta bancaria o celular.', 'No card? On Tren Nos, Limache–Puerto and Rancagua – Estación Central you can pay with a bank card or phone.') + '</span></div></div>');
+  }
+
+  /* ============================ PANTALLAS: ALERTAS ============================ */
+  function statusBlock(id) {
+    var s = SVI[id], st = STATUS[id], ok = !st, tx = st ? (S.lang === 'en' ? st.en : st.es) : null;
+    return '<div class="card"><div class="between"><span class="b8 wrapw" style="flex:1 1 160px">' + esc(s.name) + '</span>' + pill(ok, ok ? L('Funciona normal', 'Running normally') : tx[0]) + '</div><p class="t12 muted">' + L('Actualizado hace 2 min (ejemplo)', 'Updated 2 min ago (example)') + '</p><div class="sep"></div>' +
+      '<p class="b7">' + L('Qué pasa', 'What is happening') + '</p><p class="t14">' + (ok ? L('El servicio funciona con normalidad en todas sus estaciones.', 'The service is running normally at all stations.') : tx[1]) + '</p>' +
+      '<p class="b7">' + L('Qué puedes hacer', 'What you can do') + '</p><p class="t14">' + (ok ? L('Revisa en Viajes cuándo pasa tu tren.', 'Check in Trips when your train comes.') : tx[2]) + '</p></div>';
+  }
+  function vAlerts() {
+    var list = SV.filter(function (s) { return S.alertFilter === 'all' || S.alertFilter === s.g; });
+    return screen('alerts', topBar(L('Alertas', 'Alerts'), { root: true }) + '<div class="scroll">' +
+      swRow('toggleAlerts', S.alertsOn, L('Avisarme de cambios en mis viajes', 'Alert me about changes to my trips'), L('Retrasos, cambios de horario y fallas, antes de salir.', 'Delays, timetable changes and faults, before you leave.')) +
+      '<p class="sec">' + L('Estado del servicio', 'Service status') + '</p><p class="t13 muted">' + L('Elige tu servicio para ver cómo está funcionando.', 'Choose your service to see how it is running.') + '</p>' +
+      svcButton('alert', S.sdId) + statusBlock(S.sdId) +
+      '<div class="col g8"><p class="t13 b7 muted">' + L('Hoy hay cambios en:', 'Changes today on:') + '</p><div class="wrapflex">' + SV.filter(function (s) { return STATUS[s.id]; }).map(function (s) { return '<button class="chip t13"' + act('sdPick', s.id) + pressed(S.sdId === s.id) + '>' + esc(s.short) + '</button>'; }).join('') + '</div></div>' +
+      '<p class="sec">' + L('Avisos recientes', 'Recent alerts') + '</p><div class="card tight">' +
+      S.notifs.map(function (n) { var tx = S.lang === 'en' ? n.en : n.es; return '<div class="irow" style="flex-wrap:nowrap"><span class="tile" style="background:var(--warnbg);color:var(--warn)">' + ic('bell', 18) + '</span><span class="grow col g2 wrapw"><span class="b7">' + esc(tx[0]) + '</span><span class="t13 muted">' + esc(tx[1]) + '</span><span class="t12 muted">' + ago(n.at) + '</span></span></div>'; }).join('') + '</div>' +
+      '<button class="btn ghost" style="border:1.5px dashed var(--line);color:var(--muted)"' + act('simulate') + '>' + L('Simular un aviso de retraso (para el testeo)', 'Simulate a delay alert (for testing)') + '</button>' +
+      '<p class="t12 muted">' + L('Estados y avisos de ejemplo.', 'Example statuses and alerts.') + '</p></div>');
+  }
+  function vStatus() {
+    var s = SVI[S.sdId], st = STATUS[s.id], ok = !st, tx = st ? (S.lang === 'en' ? st.en : st.es) : null;
+    return screen('statusDetail', topBar(esc(s.short)) + '<div class="scroll">' +
+      '<div class="card"><p class="t13 muted">' + esc(s.name) + '</p><div>' + pill(ok, ok ? L('Funciona con normalidad', 'Running normally') : tx[0]) + '</div><p class="t12 muted">' + L('Actualizado hace 2 min (ejemplo)', 'Updated 2 min ago (example)') + '</p></div>' +
+      '<div class="card"><p class="sec">' + L('Qué pasa', 'What is happening') + '</p><p>' + (ok ? L('El servicio funciona con normalidad en todas sus estaciones.', 'The service is running normally at all stations.') : tx[1]) + '</p></div>' +
+      '<div class="card soft"><p class="sec" style="color:var(--navy)">' + L('Qué puedes hacer', 'What you can do') + '</p><p>' + (ok ? L('Revisa en Viajes cuándo pasa tu tren.', 'Check in Trips when your train comes.') : tx[2]) + '</p></div></div>');
+  }
+
+  /* ============================ PANTALLAS: MÁS ============================ */
+  function vMenu() {
+    var acc = S.user
+      ? '<div class="card"><div class="rowf"><span class="tile navy">' + ic('user') + '</span><div class="col g2 wrapw grow"><span class="b8">' + esc(S.user.name) + '</span><span class="t13 muted wrapw">' + esc(S.user.email) + '</span></div></div><button class="btn outline sm"' + act('logout') + '>' + ic('logout', 18) + L('Cerrar sesión', 'Log out') + '</button></div>'
+      : '<div class="card navy"><p class="b8">' + L('Estás como invitado', 'You are a guest') + '</p><p class="t13" style="color:var(--navy-ink)">' + L('Puedes usar todo. Crea una cuenta para guardar tus viajes y pasajes en todos tus dispositivos.', 'You can use everything. Create an account to keep your trips and tickets on all your devices.') + '</p><div class="wrapflex"><button class="btn white sm" style="flex:1 1 140px"' + act('go', 'signup') + '>' + L('Crear cuenta', 'Create account') + '</button><button class="btn onnavy sm" style="flex:1 1 120px"' + act('go', 'login') + '>' + L('Iniciar sesión', 'Log in') + '</button></div></div>';
+    return screen('menu', topBar(L('Más', 'More'), { root: true }) + '<div class="scroll">' + acc +
+      navRow('push', 'lang', 'globe', L('Idioma', 'Language'), S.lang === 'en' ? 'English' : 'Español') +
+      navRow('push', 'servicio', 'map', L('Tu servicio', 'Your service'), L('Estaciones, combinaciones con Metro y horarios', 'Stations, Metro connections and hours')) +
+      navRow('push', 'access', 'access', L('Accesibilidad', 'Accessibility'), L('Texto grande y alto contraste', 'Large text and high contrast')) +
+      navRow('push', 'benef', 'percent', L('Tarifas rebajadas', 'Reduced fares'), L('Estudiantes, personas mayores y más', 'Students, older adults and more')) +
+      navRow('push', 'tuts', 'play', L('Tutoriales', 'Tutorials'), L('Aprende a usar la app en 30 segundos', 'Learn the app in 30 seconds')) +
+      navRow('push', 'help', 'help', L('Ayuda y contacto', 'Help and contact'), L('Escríbenos, reclamos y Pasajeros Opinan', 'Message us, complaints and Pasajeros Opinan')) +
+      '<button class="btn ghost" style="border:1.5px dashed var(--line);color:var(--muted)"' + act('restart') + '>' + ic('refresh', 18) + L('Reiniciar prototipo (siguiente participante)', 'Restart prototype (next participant)') + '</button></div>');
+  }
+  function vLang() {
+    function o(code, name, sub) { var on = S.lang === code; return '<button class="lrow' + (on ? ' sel' : '') + '"' + act('setLang', code) + pressed(on) + ' lang="' + code + '"><span class="grow col g2"><span class="b8">' + name + '</span><span class="t13 muted">' + sub + '</span></span>' + (on ? '<span style="color:var(--navy);display:flex">' + ic('check') + '</span>' : '') + '</button>'; }
+    return screen('lang', topBar(L('Idioma', 'Language')) + '<div class="scroll">' + o('es', 'Español', 'Chile') + o('en', 'English', 'Inglés') +
+      '<p class="t13 muted">' + L('Los nombres de estaciones y servicios se mantienen en español.', 'Station and service names stay in Spanish.') + '</p></div>');
+  }
+  function vAccess() {
+    return screen('access', topBar(L('Accesibilidad', 'Accessibility')) + '<div class="scroll">' +
+      swRow('toggleBig', S.big, L('Texto grande', 'Large text'), L('Agranda todo el texto un 20 % y reordena las tarjetas para que nada se salga.', 'Makes all text 20% larger and rearranges cards so nothing overflows.')) +
+      swRow('toggleHc', S.hc, L('Alto contraste', 'High contrast'), L('Textos secundarios y bordes más oscuros.', 'Darker secondary text and borders.')) +
+      '<div class="card soft"><p class="sec" style="color:var(--navy)">' + L('Siempre a mano', 'Always at hand') + '</p><p class="t14">' + L('El botón Aa está arriba a la derecha en todas las pantallas. La app también respeta el lector de pantalla de tu teléfono.', 'The Aa button is at the top right of every screen. The app also works with your phone screen reader.') + '</p></div></div>');
+  }
+  function vServicio() {
+    var s = SVI[S.svcInfo];
+    var metroList = SV.map(function (x) { return Object.keys(x.metro).map(function (st) { return [x.short, st, x.metro[st]]; }); }).reduce(function (a, b) { return a.concat(b); }, []);
+    return screen('servicio', topBar(L('Tu servicio', 'Your service')) + '<div class="scroll">' + svcButton('info', s.id) +
+      '<div class="seg"><button class="t13"' + act('svcTab', 'est') + pressed(S.svcTab === 'est') + '>' + L('Estaciones', 'Stations') + '</button><button class="t13"' + act('svcTab', 'metro') + pressed(S.svcTab === 'metro') + '>' + L('Combinaciones', 'Connections') + '</button><button class="t13"' + act('svcTab', 'hor') + pressed(S.svcTab === 'hor') + '>' + L('Horarios', 'Hours') + '</button></div>' +
+      (S.svcTab === 'est' ? '<p class="t13 muted">' + s.st.length + L(' estaciones', ' stations') + (s.partial ? L(' · principales detenciones', ' · main stops') : '') + L(' · fuente: efe.cl', ' · source: efe.cl') + '</p><div class="card tight" style="padding-block:8px">' + stationList(s.id, 0, s.st.length - 1, null) + '</div>' : '') +
+      (S.svcTab === 'metro' ? '<div class="card"><p class="sec">' + L('Dónde combinar con Metro de Santiago', 'Where to change to Santiago Metro') + '</p>' + metroList.map(function (m) { return '<div class="irow"><span class="col g2 wrapw"><span class="b8">' + esc(m[1]) + '</span><span class="t13 muted">' + esc(m[0]) + '</span></span><span class="wrapflex" style="gap:6px">' + m[2].map(function (l) { return '<span class="metro ' + l + '">' + ic('metro', 12) + ' Metro ' + l + '</span>'; }).join('') + '</span></div>'; }).join('') + '</div>' +
+        '<p class="t12 muted">' + L('Tren Nos: Estación Central (Línea 1) y Lo Valledor (Línea 6). Los trenes a Rancagua, San Fernando y Chillán salen de Estación Central (Línea 1). Fuente: efe.cl.', 'Tren Nos: Estación Central (Line 1) and Lo Valledor (Line 6). Trains to Rancagua, San Fernando and Chillán leave from Estación Central (Line 1). Source: efe.cl.') + '</p>' : '') +
+      (S.svcTab === 'hor' ? (s.id === 'nos' ? '<div class="card tight">' + [[L('Lunes a viernes', 'Mon–Fri'), '06:00', '23:00'], [L('Sábados', 'Saturdays'), '07:00', '23:00'], [L('Domingos y festivos', 'Sun & holidays'), '08:00', '23:00']].map(function (r) { return '<div class="irow"><span class="b6">' + r[0] + '</span><span class="num b7">' + r[1] + ' – ' + r[2] + '</span></div>'; }).join('') + '</div><p class="t12 muted">' + L('Primer y último tren desde Estación Central y Nos.', 'First and last train from Estación Central and Nos.') + '</p>' : '<div class="card soft"><p class="t14">' + L('Horarios de este servicio: [por confirmar en efe.cl].', 'Hours for this service: [to confirm on efe.cl].') + '</p></div>') : '') +
+      '</div>');
+  }
+  function vBenef() {
+    function c(t, b) { return '<div class="card"><p class="t16 disp b8">' + t + '</p><p class="t14">' + b + '</p></div>'; }
+    return screen('benef', topBar(L('Tarifas rebajadas', 'Reduced fares')) + '<div class="scroll">' +
+      c(L('Estudiantes', 'Students'), L('Educación media y superior pagan $260 en Tren Nos y Metro, con tu Tarjeta Nacional Estudiantil (TNE). Fuente: efe.cl.', 'Secondary and higher-education students pay $260 on Tren Nos and Metro with the national student card (TNE). Source: efe.cl.')) +
+      c(L('Personas mayores', 'Older adults'), L('[Confirmar si existe tarifa rebajada, desde qué edad y con qué tarjeta se paga.]', '[Confirm whether there is a reduced fare, from what age and with which card.]')) +
+      c(L('Personas con discapacidad', 'People with disabilities'), L('[Confirmar beneficio vigente y requisitos.]', '[Confirm current benefit and requirements.]')) + '</div>');
+  }
+  function vTuts() {
+    var T = [
+      [L('¿Cómo veo cuándo pasa mi tren?', 'How do I see when my train comes?'), [L('Guarda tu viaje habitual al empezar o desde Viajes.', 'Save your usual trip when you start or from Trips.'), L('En Inicio verás la cuenta regresiva de tu próximo tren.', 'Home shows a countdown to your next train.'), L('Toca «Ver línea en vivo» para seguirlo estación por estación.', 'Tap “Live line” to follow it station by station.')]],
+      [L('¿Cómo planifico un viaje a otra hora?', 'How do I plan a trip for another time?'), [L('En Viajes, elige el servicio y las estaciones.', 'In Trips, choose the service and stations.'), L('Toca «Elegir hora» y mueve el control deslizante.', 'Tap “Pick a time” and move the slider.'), L('Verás los trenes y la tarifa de ese horario.', 'You will see the trains and the fare for that time.')]],
+      [L('¿Cómo recargo mi tarjeta?', 'How do I top up my card?'), [L('Toca Billetera en la barra inferior.', 'Tap Wallet in the bottom bar.'), L('Toca Recargar en la tarjeta que quieras.', 'Tap Top up on the card you want.'), L('Elige el monto y paga con débito, crédito o BancoEstado.', 'Choose the amount and pay by debit, credit or BancoEstado.')]],
+      [L('¿Dónde combino con Metro?', 'Where do I change to Metro?'), [L('Entra a Más › Tu servicio.', 'Go to More › Your service.'), L('Abre la pestaña Combinaciones.', 'Open the Connections tab.'), L('Las estaciones con combinación tienen la etiqueta Metro L1 o L6.', 'Stations with a connection show a Metro L1 or L6 label.')]],
+      [L('¿Cómo pago con Bip!QR?', 'How do I pay with Bip!QR?'), [L('Entra a Billetera › Bip!QR y elige tu tarjeta.', 'Go to Wallet › Bip!QR and choose your card.'), L('Toca Activar Bip!QR.', 'Tap Turn on Bip!QR.'), L('En el torniquete del Tren Nos, acerca la pantalla al lector.', 'At the Tren Nos turnstile, hold the screen to the reader.')]],
+      [L('Algo falló, ¿cómo lo reporto?', 'Something failed, how do I report it?'), [L('Toca el botón rojo de ayuda abajo a la derecha.', 'Tap the red help button at the bottom right.'), L('Elige qué pasó o escríbelo.', 'Choose what happened or type it.'), L('Recibes un número de caso y la respuesta llega en la misma app.', 'You get a case number and the reply arrives in the app.')]]
+    ];
+    return screen('tuts', topBar(L('Tutoriales', 'Tutorials')) + '<div class="scroll">' + T.map(function (t, i) {
+      var open = S.tutOpen === i;
+      return '<div class="card" style="padding:0;gap:0;overflow:hidden"><button' + act('tut', i) + ' aria-expanded="' + open + '" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;min-height:60px;text-align:left"><span class="tile navy" style="width:36px;height:36px">' + ic('play', 18) + '</span><span class="grow b7 wrapw">' + t[0] + '</span><span class="muted" style="display:flex;transform:rotate(' + (open ? 180 : 0) + 'deg)">' + ic('down', 20) + '</span></button>' +
+        (open ? '<div class="col g10" style="padding:0 16px 16px">' + t[1].map(function (x, j) { return '<div class="rowf" style="align-items:flex-start"><span class="t13 b8" style="width:26px;height:26px;border-radius:99px;background:var(--soft);color:var(--navy);display:flex;align-items:center;justify-content:center;flex:none">' + (j + 1) + '</span><span class="t14 wrapw">' + x + '</span></div>'; }).join('') + '</div>' : '') + '</div>';
+    }).join('') + '</div>');
+  }
+  function vHelp() {
+    return screen('help', topBar(L('Ayuda y contacto', 'Help and contact')) + '<div class="scroll">' +
+      navRow('help', '', 'chat', L('Escríbenos', 'Message us'), L('Asistente al instante y, si lo necesitas, una persona', 'Instant assistant and, if needed, a person')) +
+      navRow('help', '', 'alert', L('Algo no funciona en la app', 'Something is not working'), L('Envía una captura y lo revisamos', 'Send a screenshot and we will look into it')) +
+      navRow('toast', 'opinan', 'users', 'Pasajeros Opinan', L('Participa para mejorar el servicio', 'Take part in improving the service')) +
+      '<div class="card soft"><p class="b7" style="color:var(--navy)">' + L('Teléfono de atención', 'Customer service phone') + '</p><p class="t14">[' + L('Número de contacto EFE', 'EFE contact number') + ']</p></div></div>');
+  }
+
+  /* ============================ SELECTORES (hojas) ============================ */
+  function vPicker() {
+    var k = S.picker; if (!k) return '';
+    var isSvc = k === 'svc' || k === 'dsvc' || k === 'info' || k === 'alert';
+    var title, list;
+    if (isSvc) {
+      var cur = k === 'svc' ? S.plan.svc : (k === 'dsvc' ? S.draft.svc : (k === 'alert' ? S.sdId : S.svcInfo));
+      title = L('Elige el servicio', 'Choose a service');
+      list = [['u', L('Trenes urbanos y de cercanía', 'Commuter trains')], ['r', L('Trenes regionales y de larga distancia', 'Regional and long-distance trains')]].map(function (g) {
+        return '<p class="grouplab">' + g[1] + '</p>' + SV.filter(function (s) { return s.g === g[0]; }).map(function (s) {
+          var on = cur === s.id;
+          return '<button class="opt"' + act('pickSvc', s.id) + pressed(on) + '><span class="tile ' + (on ? 'navy' : '') + '" style="width:36px;height:36px">' + ic('train', 18) + '</span><span class="grow col g2 wrapw"><span class="' + (on ? 'b8' : 'b6') + '">' + esc(s.name) + '</span><span class="t12 muted">' + s.st[0] + ' – ' + s.st[s.st.length - 1] + ' · ' + s.st.length + L(' estaciones', ' stations') + '</span>' + (k === 'alert' ? '<span>' + pill(!STATUS[s.id], STATUS[s.id] ? (S.lang === 'en' ? STATUS[s.id].en[0] : STATUS[s.id].es[0]) : L('Normal', 'Normal')) + '</span>' : '') + '</span>' + (on ? '<span class="ck">' + ic('check') + '</span>' : '') + '</button>';
+        }).join('');
+      }).join('');
+    } else {
+      var svc = (k === 'from' || k === 'to') ? S.plan.svc : (k === 'dfrom' || k === 'dto' ? S.draft.svc : 'ch');
+      var curI = { from: S.plan.from, to: S.plan.to, dfrom: S.draft.from, dto: S.draft.to, ldfrom: S.ld.from, ldto: S.ld.to }[k];
+      title = /from$/.test(k) ? L('¿Desde qué estación?', 'From which station?') : L('¿Hacia qué estación?', 'To which station?');
+      list = SVI[svc].st.map(function (n, i) {
+        var on = curI === i, mb = metroBadges(svc, n), note = stNote(svc, n);
+        return '<button class="opt"' + act('pickSt', i) + pressed(on) + '><span class="grow col g4 wrapw"><span class="' + (on ? 'b8' : 'b6') + '">' + esc(n) + '</span>' + (mb || note ? '<span class="wrapflex" style="gap:6px;align-items:center">' + mb + (note ? '<span class="t12 muted">' + esc(note) + '</span>' : '') + '</span>' : '') + '</span>' + (on ? '<span class="ck">' + ic('check') + '</span>' : '') + '</button>';
+      }).join('');
+      title += '<span class="t13 muted b6" style="display:block;font-family:var(--body)">' + esc(SVI[svc].name) + '</span>';
+    }
+    return '<div class="sheetwrap" data-k="sheet"><button class="scrim"' + act('closePicker') + ' aria-label="' + L('Cerrar', 'Close') + '"></button><div class="sheet" role="dialog" aria-modal="true" aria-label="' + L('Selector', 'Picker') + '"><div class="grab"></div>' +
+      '<div class="rowf" style="padding:8px 8px 8px 20px;border-bottom:1px solid var(--line)"><p class="grow t18 disp b8">' + title + '</p><button class="ib"' + act('closePicker') + ' aria-label="' + L('Cerrar', 'Close') + '">' + ic('x') + '</button></div>' +
+      '<div class="list">' + list + '</div></div></div>';
+  }
+
+  /* ============================ RAÍZ ============================ */
+  var CHIPS = {
+    pago: ['Falló un pago', 'A payment failed'], doble: ['Me cobraron dos veces', 'I was charged twice'], tarjeta: ['Mi tarjeta o QR no funciona', 'My card or QR is not working'],
+    pasaje: ['Problema con mi pasaje', 'Problem with my ticket'], tren: ['Mi tren no pasó', 'My train did not come'], otro: ['Otro problema', 'Something else'],
+    persona: ['Hablar con una persona', 'Talk to a person'], ok: ['Listo, gracias', 'Done, thanks'], reintentar: ['Reintentar el pago', 'Retry the payment'],
+    pasajes: ['Ir a mis pasajes', 'Go to my tickets'], estado: ['Ver estado del servicio', 'See service status']
+  };
+  function caseNo() { return '#EFE-' + (48213 + S.chat.msgs.length * 7); }
+  function botText(k) {
+    var R = {
+      hola: [['Hola, soy el asistente de EFE Trenes. ¿Qué pasó? Elige una opción o escríbelo abajo.', 'Hi, I am the EFE Trenes assistant. What happened? Pick an option or type it below.'], ['pago', 'doble', 'tarjeta', 'pasaje', 'tren', 'otro']],
+      pago: [S.chat.ctx === 'pago'
+        ? ['Veo que tu recarga de ' + money(S.rc.amount) + ' fue rechazada por el banco. No se descontó dinero. Puedes reintentar con otro medio de pago o hablar con una persona.', 'I can see your ' + money(S.rc.amount) + ' top-up was declined by the bank. No money was taken. You can retry with another payment method or talk to a person.']
+        : ['Revisé tu último pago: el banco lo rechazó y no se descontó dinero (ejemplo). Puedes reintentar con otro medio de pago o hablar con una persona.', 'I checked your last payment: the bank declined it and no money was taken (example). You can retry with another payment method or talk to a person.'], ['reintentar', 'persona']],
+      doble: [['Creé el caso ' + caseNo() + '. Si se confirma el doble cobro, te devolvemos el monto en hasta 5 días hábiles y te avisamos aquí (ejemplo).', 'I opened case ' + caseNo() + '. If the double charge is confirmed, we refund it within 5 working days and let you know here (example).'], ['persona', 'ok']],
+      tarjeta: [['Prueba esto: 1) Si usas Bip!QR, sube el brillo de la pantalla. 2) Acerca la tarjeta o el QR al lector y espera el sonido. 3) Revisa que tengas saldo o una tarjeta activa. ¿Se solucionó?', 'Try this: 1) If you use Bip!QR, turn up the screen brightness. 2) Hold the card or QR to the reader and wait for the beep. 3) Check you have balance or an active card. Did that fix it?'], ['ok', 'persona']],
+      pasaje: [['Puedes ver, cambiar o anular tu pasaje en Billetera › Pasajes. ¿Te llevo?', 'You can view, change or cancel your ticket in Wallet › Tickets. Shall I take you there?'], ['pasajes', 'persona']],
+      tren: [['Lo siento. En el estado de tu servicio te contamos qué pasa y qué puedes hacer.', 'Sorry about that. The status of your service shows what is happening and what you can do.'], ['estado', 'persona']],
+      otro: [['Cuéntame qué pasó en el cuadro de abajo. Si puedes, indica la estación y la hora.', 'Tell me what happened in the box below. If you can, include the station and time.'], []],
+      persona: [['Listo. Te conecté con una persona del equipo de atención, caso ' + caseNo() + '. Espera estimada: 4 min (ejemplo). Te responderán aquí mismo, aunque cierres la app.', 'Done. I connected you with a person from customer service, case ' + caseNo() + '. Estimated wait: 4 min (example). They will reply right here, even if you close the app.'], ['ok']],
+      ok: [['Qué bueno. Si necesitas algo más, toca el botón de ayuda abajo a la derecha.', 'Great. If you need anything else, tap the help button at the bottom right.'], []],
+      texto: [['Gracias. Guardé tu mensaje en el caso ' + caseNo() + ' y te respondemos aquí en menos de 15 min (ejemplo). ¿Quieres hablar con una persona ahora?', 'Thanks. I saved your message in case ' + caseNo() + ' and we will reply here within 15 min (example). Do you want to talk to a person now?'], ['persona', 'ok']]
+    };
+    return R[k] || R.hola;
+  }
+  function botSay(k) {
+    set({ chat: Object.assign({}, S.chat, { typing: true }) });
+    clearTimeout(timers.chat);
+    timers.chat = setTimeout(function () { var r = botText(k); set({ chat: Object.assign({}, S.chat, { typing: false, msgs: S.chat.msgs.concat([{ from: 'bot', t: r[0], chips: r[1] }]) }) }); }, 750);
+  }
+  function openChat(ctx) {
+    var c = Object.assign({}, S.chat, { open: true });
+    if (ctx === 'pago') {
+      c.ctx = 'pago'; c.msgs = [{ from: 'bot', t: botText('hola')[0], chips: [] }, { from: 'me', t: CHIPS.pago }];
+      set({ chat: c, picker: null }); botSay('pago'); return;
+    }
+    if (!c.msgs.length) { var r = botText('hola'); c.msgs = [{ from: 'bot', t: r[0], chips: r[1] }]; }
+    set({ chat: c, picker: null });
+  }
+  function chatChip(k) {
+    var closed = Object.assign({}, S.chat, { open: false });
+    if (k === 'reintentar') { var st = Object.assign({}, S.stacks); st.billetera = ['wallet', 'recharge']; set({ chat: closed, tab: 'billetera', walletTab: 'cards', stacks: st, rc: Object.assign({}, S.rc, { failed: false }) }); return; }
+    if (k === 'pasajes') { jump('billetera', ['wallet'], { walletTab: 'tickets', chat: closed }); return; }
+    if (k === 'estado') { jump('alertas', ['alerts'], { chat: closed }); return; }
+    set({ chat: Object.assign({}, S.chat, { msgs: S.chat.msgs.concat([{ from: 'me', t: CHIPS[k] }]) }) });
+    botSay(k);
+  }
+  function vChat() {
+    var c = S.chat; if (!c.open) return '';
+    var last = c.msgs[c.msgs.length - 1];
+    var chips = (!c.typing && last && last.from === 'bot' && last.chips && last.chips.length) ? '<div class="chatchips">' + last.chips.map(function (k) { return '<button class="chip t13"' + act('chip', k) + '>' + LL(CHIPS[k]) + '</button>'; }).join('') + '</div>' : '';
+    return '<div class="sheetwrap" data-k="chat"><button class="scrim"' + act('closeChat') + ' aria-label="' + L('Cerrar ayuda', 'Close help') + '"></button><div class="sheet chat" role="dialog" aria-modal="true" aria-label="' + L('Ayuda EFE', 'EFE Help') + '"><div class="grab"></div>' +
+      '<div class="rowf" style="padding:8px 8px 10px 16px;border-bottom:1px solid var(--line)"><span class="tile red">' + ic('chat') + '</span><div class="grow col g2"><p class="t16 disp b8">' + L('Ayuda EFE', 'EFE Help') + '</p><p class="t12 muted">' + L('Asistente · responde al instante', 'Assistant · replies instantly') + '</p></div><button class="ib"' + act('closeChat') + ' aria-label="' + L('Cerrar ayuda', 'Close help') + '">' + ic('x') + '</button></div>' +
+      '<div class="msgs" aria-live="polite">' + c.msgs.map(function (m) { return '<div class="bub ' + m.from + ' t14">' + (m.raw != null ? esc(m.raw) : LL(m.t)) + '</div>'; }).join('') +
+      (c.typing ? '<div class="bub bot typing" aria-label="' + L('Escribiendo', 'Typing') + '"><span></span><span></span><span></span></div>' : '') + '</div>' + chips +
+      '<form class="chatin" data-form="chat"><input id="chat-in" type="text" data-in="chatDraft" value="' + esc(c.draft) + '" placeholder="' + L('Escribe tu problema', 'Describe your problem') + '" aria-label="' + L('Escribe tu problema', 'Describe your problem') + '" autocomplete="off"><button type="submit" class="send" aria-label="' + L('Enviar', 'Send') + '">' + ic('send', 20) + '</button></form></div></div>';
+  }
+  function tabbar() {
+    function b(t, icon, label, extra) {
+      var on = S.tab === t;
+      return '<button' + act('tab', t) + (on ? ' aria-current="page"' : '') + (extra ? ' aria-label="' + extra + '"' : '') + '><span class="pillic">' + ic(icon, 24) + (t === 'alertas' && S.unread > 0 ? '<span class="badge">' + S.unread + '</span>' : '') + '</span><span class="lab">' + label + '</span></button>';
+    }
+    return '<nav class="tabbar" aria-label="' + L('Navegación principal', 'Main navigation') + '">' +
+      b('inicio', 'home', L('Inicio', 'Home')) + b('viajes', 'train', L('Viajes', 'Trips')) + b('billetera', 'wallet', L('Billetera', 'Wallet')) +
+      b('alertas', 'bell', L('Alertas', 'Alerts'), S.unread > 0 ? L('Alertas, ', 'Alerts, ') + S.unread + L(' sin leer', ' unread') : null) + b('mas', 'grid', L('Más', 'More')) + '</nav>';
+  }
+  var VIEWS = { home: vHome, line: vLine, plan: vPlan, trip: vTrip, seat: vSeat, pay: vPay, ldDone: vLdDone, wallet: vWallet, recharge: vRecharge, rcDone: vRcDone, ticket: vTicket, addCard: vAddCard, alerts: vAlerts, statusDetail: vStatus, menu: vMenu, lang: vLang, servicio: vServicio, access: vAccess, benef: vBenef, tuts: vTuts, help: vHelp };
+  function view() {
+    var inner;
+    if (S.stage) {
+      inner = { welcome: vWelcome, login: vLogin, signup: vSignup, onbTipo: vOnbTipo, onbHabit: vOnbHabit }[S.stage]();
+    } else {
+      var st = S.stacks[S.tab], cur = st[st.length - 1];
+      inner = VIEWS[cur]() + tabbar();
+    }
+    var banner = S.banner && !S.stage ? '<div class="banner" role="status" data-k="banner"><span class="tile red">' + ic('bell', 20) + '</span><button' + act('openBanner') + ' style="flex:1;display:flex;flex-direction:column;gap:2px;text-align:left;color:#fff;min-height:44px;min-width:0"><span class="t11" style="color:#B8C4D3">EFE Trenes · ' + L('ahora', 'now') + '</span><span class="t14 b7 wrapw">' + esc(S.lang === 'en' ? S.banner.en[0] : S.banner.es[0]) + '</span><span class="t12 wrapw" style="color:#D5DDE8">' + esc(S.lang === 'en' ? S.banner.en[1] : S.banner.es[1]) + '</span></button><button class="ib" style="color:#D5DDE8"' + act('closeBanner') + ' aria-label="' + L('Cerrar aviso', 'Close alert') + '">' + ic('x', 20) + '</button></div>' : '';
+    var toast = S.toast ? '<div class="toast' + (S.stage ? ' low' : '') + '" role="status" data-k="toast"><span style="color:#7FD1A4;display:flex">' + ic('check', 20) + '</span><span class="t14 b6 wrapw">' + esc(S.toast) + '</span></div>' : '';
+    var fab = !S.stage && !S.chat.open && !S.picker ? '<button class="fab"' + act('help') + ' aria-label="' + L('Ayuda: reporta un problema', 'Help: report a problem') + '">' + ic('chat', 28) + '</button>' : '';
+    return '<div class="app' + (S.big ? ' big' : '') + (S.hc ? ' hc' : '') + (S.stage ? '' : ' inapp') + '" lang="' + S.lang + '">' + inner + fab + vPicker() + vChat() + banner + toast + '</div>';
+  }
+
+  /* ============================ ACCIONES ============================ */
+  function set(o) { for (var k in o) S[k] = o[k]; schedule(); }
+  function toast(msg) { clearTimeout(timers.toast); set({ toast: msg }); timers.toast = setTimeout(function () { set({ toast: '' }); }, 2800); }
+  function stackSet(t, arr) { var st = Object.assign({}, S.stacks); st[t] = arr; return st; }
+  function push(scr) { set({ stacks: stackSet(S.tab, S.stacks[S.tab].concat([scr])) }); }
+  function jump(t, arr, extra) { var o = Object.assign({ tab: t, stacks: stackSet(t, arr), picker: null }, extra || {}); if (t === 'alertas') o.unread = 0; set(o); }
+  function scheduleAlert() { clearTimeout(timers.alert); timers.alert = setTimeout(function () { fireAlert(false); }, 10000); }
+  function fireAlert(manual) {
+    if (!S.alertsOn) { if (manual) toast(L('Activa «Avisarme de cambios» para recibir avisos', 'Turn on “Alert me about changes” to get alerts')); return; }
+    var h = S.saved[0] || { svc: S.plan.svc, from: S.plan.from, to: S.plan.to };
+    var ts = deps(h.svc, h.from, h.to, minsOf(Date.now()), dayOf(Date.now()), 1);
+    if (!ts.length) { if (manual) toast(L('No hay trenes próximos para simular un aviso', 'No upcoming trains to simulate an alert')); return; }
+    var t = ts[0], s = SVI[h.svc];
+    var b = { es: ['Tu tren de las ' + fmt(t) + ' viene 3 min tarde', s.st[h.from] + ' → ' + s.st[h.to] + ' · Nueva hora estimada ' + fmt(t + 3)], en: ['Your ' + fmt(t) + ' train is 3 min late', s.st[h.from] + ' → ' + s.st[h.to] + ' · New expected time ' + fmt(t + 3)] };
+    set({ delayedFor: h.svc + '-' + h.from + '-' + h.to + '-' + t, banner: b, unread: S.tab === 'alertas' ? 0 : S.unread + 1, notifs: [{ es: b.es, en: b.en, at: Date.now() }].concat(S.notifs) });
+    clearTimeout(timers.banner); timers.banner = setTimeout(function () { set({ banner: null }); }, 9000);
+  }
+  function enterApp() { set({ onboarded: true, stage: null, tab: 'inicio', stacks: { inicio: ['home'], viajes: ['plan'], billetera: ['wallet'], alertas: ['alerts'], mas: ['menu'] }, picker: null }); }
+  function validEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+
+  var A = {
+    setLang: function (v) { set({ lang: v }); },
+    toggleBig: function () { set({ big: !S.big }); },
+    toggleHc: function () { set({ hc: !S.hc }); },
+    go: function (v) { set({ stage: v, picker: null }); },
+    guest: function () { set({ guest: true, user: null, stage: (S.onboarded || S.saved.length) ? null : 'onbTipo' }); if (!S.stage) enterApp(); },
+    forgot: function () { toast(L('Te enviaremos un enlace para crear una nueva contraseña', 'We will send you a link to set a new password')); },
+    toggleTerms: function () { var f = Object.assign({}, S.fs, { terms: !S.fs.terms }); f.err = Object.assign({}, f.err, { terms: '' }); set({ fs: f }); },
+    traveler: function (v) { set({ traveler: v }); },
+    onbNext: function () { if (S.traveler === 'diario') set({ stage: 'onbHabit' }); else { set({ saved: [] }); enterApp(); } },
+    draftDays: function (v) { set({ draft: Object.assign({}, S.draft, { days: v }) }); },
+    swapDraft: function () { var d = S.draft; set({ draft: Object.assign({}, d, { from: d.to, to: d.from }) }); },
+    finish: function (v) {
+      var d = S.draft;
+      if (v === '1') {
+        set({ sdId: d.svc, saved: [{ svc: d.svc, from: d.from, to: d.to, days: d.days, time: d.time }], plan: Object.assign({}, S.plan, { svc: d.svc, from: d.from, to: d.to, mode: 'cercania', when: 'now', selT: null }) });
+        enterApp(); toast(L('Listo. Este es tu próximo tren', 'Done. This is your next train')); scheduleAlert();
+      } else { set({ saved: [] }); enterApp(); }
+    },
+    back: function () {
+      var st = S.stacks[S.tab];
+      if (st.length > 1) set({ stacks: stackSet(S.tab, st.slice(0, -1)) });
+      else if (S.tab !== 'inicio') set({ tab: 'inicio' });
+    },
+    tab: function (t) {
+      var extra = t === 'alertas' ? { unread: 0 } : {};
+      if (S.tab === t) set(Object.assign({ stacks: stackSet(t, [S.stacks[t][0]]), picker: null }, extra));
+      else set(Object.assign({ tab: t, picker: null }, extra));
+    },
+    push: function (v) { push(v); },
+    openQR: function () { jump('billetera', ['wallet'], { walletTab: 'qr' }); },
+    sdPick: function (id) { set({ sdId: id }); },
+    bqPay: function (i) { set({ bq: Object.assign({}, S.bq, { pay: +i }) }); },
+    bqOn: function () { set({ bq: Object.assign({}, S.bq, { on: true }) }); toast(L('Bip!QR activado para el Tren Nos', 'Bip!QR turned on for Tren Nos')); },
+    bqOff: function () { set({ bq: Object.assign({}, S.bq, { on: false }) }); },
+    bqUse: function () {
+      var now = Date.now(), cur = fareNos(minsOf(now), dayOf(now));
+      if (!cur) { toast(L('El Tren Nos está fuera de horario', 'Tren Nos is outside service hours')); return; }
+      set({ bq: Object.assign({}, S.bq, { uses: [{ at: now, amt: FARE[cur], f: cur }].concat(S.bq.uses) }) });
+      toast(L('Pago aprobado: ', 'Payment approved: ') + money(FARE[cur]) + ' · ' + fareName(cur));
+    },
+    rcFail: function () { set({ rc: Object.assign({}, S.rc, { failed: true }) }); },
+    help: function (ctx) { openChat(ctx || null); },
+    closeChat: function () { set({ chat: Object.assign({}, S.chat, { open: false }) }); },
+    chip: function (k) { chatChip(k); },
+    changeHabit: function () { var h = S.saved[0]; jump('viajes', ['plan'], { plan: Object.assign({}, S.plan, h ? { svc: h.svc, from: h.from, to: h.to } : {}, { mode: 'cercania', selT: null }) }); },
+    goBuy: function () { jump('viajes', ['plan'], { plan: Object.assign({}, S.plan, { mode: 'larga' }) }); },
+    toggleArrive: function () { var v = !S.arrive; set({ arrive: v }); toast(v ? L('Te avisaremos una estación antes de bajar', 'We will alert you one station before your stop') : L('Aviso de llegada desactivado', 'Arrival alert turned off')); },
+    planMode: function (v) { set({ plan: Object.assign({}, S.plan, { mode: v }) }); },
+    when: function (v) { var p = Object.assign({}, S.plan, { when: v }); if (v === 'pick' && S.plan.when === 'now') { p.time = Math.min(1380, Math.max(300, Math.round(minsOf(S.now) / 5) * 5)); p.day = dayOf(S.now); } set({ plan: p }); },
+    planDay: function (v) { set({ plan: Object.assign({}, S.plan, { day: v }) }); },
+    swapPlan: function () { var p = S.plan; set({ plan: Object.assign({}, p, { from: p.to, to: p.from, selT: null }) }); },
+    useSaved: function (i) { var x = S.saved[+i]; set({ plan: Object.assign({}, S.plan, { svc: x.svc, from: x.from, to: x.to, selT: null }) }); },
+    pickTrain: function (t) { set({ plan: Object.assign({}, S.plan, { selT: +t }), stacks: stackSet('viajes', S.stacks.viajes.concat(['trip'])) }); },
+    saveDays: function (v) { set({ saveDays: v }); },
+    saveTrip: function () {
+      var p = S.plan; if (p.selT == null) return;
+      var item = { svc: p.svc, from: p.from, to: p.to, days: S.saveDays, time: ((p.selT % 1440) + 1440) % 1440 };
+      set({ saved: [item].concat(S.saved.filter(function (x) { return !(x.svc === p.svc && x.from === p.from && x.to === p.to); })), traveler: 'diario' });
+      toast(L('Viaje guardado. Lo verás en Inicio', 'Trip saved. You will see it on Home'));
+    },
+    swapLd: function () { var l = S.ld; set({ ld: Object.assign({}, l, { from: l.to, to: l.from }) }); },
+    ldDate: function (i) { set({ ld: Object.assign({}, S.ld, { date: +i }) }); },
+    ldTrain: function (t) { set({ ld: Object.assign({}, S.ld, { train: +t, seat: null }), stacks: stackSet('viajes', S.stacks.viajes.concat(['seat'])) }); },
+    coach: function (c) { set({ ld: Object.assign({}, S.ld, { coach: +c, seat: null }) }); },
+    seat: function (id) { set({ ld: Object.assign({}, S.ld, { seat: id }) }); },
+    ldPay: function (i) { set({ ld: Object.assign({}, S.ld, { pay: +i }) }); },
+    toggleLdGuest: function () { set({ ld: Object.assign({}, S.ld, { guest: !S.ld.guest }) }); },
+    confirmPay: function () {
+      var l = S.ld, ch = SVI.ch;
+      var t = { route: ch.st[l.from] + ' → ' + ch.st[l.to], date: ldDates()[l.date], time: fmt(l.train), coach: String(l.coach), seat: l.seat || '', code: 'CH' + (4710 + S.tickets.length * 137) };
+      set({ tickets: [t].concat(S.tickets), tkIdx: 0, stacks: stackSet('viajes', S.stacks.viajes.concat(['ldDone'])) });
+    },
+    backToViajes: function () { set({ stacks: stackSet('viajes', ['plan']), ld: Object.assign({}, S.ld, { seat: null }) }); },
+    openTicket: function (i) { var st = Object.assign({}, S.stacks); st.billetera = ['wallet', 'ticket']; if (S.tab === 'viajes') st.viajes = ['plan']; set({ tab: 'billetera', walletTab: 'tickets', tkIdx: +i || 0, stacks: st }); },
+    wTab: function (v) { set({ walletTab: v }); },
+    recharge: function (k) { set({ rc: Object.assign({}, S.rc, { card: k, failed: false }), stacks: stackSet('billetera', S.stacks.billetera.concat(['recharge'])) }); },
+    amount: function (v) { set({ rc: Object.assign({}, S.rc, { amount: +v }) }); },
+    rcPay: function (i) { set({ rc: Object.assign({}, S.rc, { pay: +i }) }); },
+    doRecharge: function () { var c = S.rc, w = Object.assign({}, S.wallet); w[c.card] += c.amount; set({ wallet: w, rc: Object.assign({}, c, { added: c.amount, failed: false }), stacks: stackSet('billetera', ['wallet', 'rcDone']) }); },
+    backWallet: function () { set({ stacks: stackSet('billetera', ['wallet']) }); },
+    toggleAlerts: function () { var v = !S.alertsOn; set({ alertsOn: v }); toast(v ? L('Avisos activados', 'Alerts on') : L('Avisos desactivados', 'Alerts off')); },
+    alertFilter: function (v) { set({ alertFilter: v }); },
+    statusDetail: function (id) { set({ sdId: id, stacks: stackSet('alertas', S.stacks.alertas.concat(['statusDetail'])) }); },
+    simulate: function () { fireAlert(true); },
+    openBanner: function () { clearTimeout(timers.banner); S.banner = null; jump('alertas', ['alerts']); },
+    closeBanner: function () { clearTimeout(timers.banner); set({ banner: null }); },
+    svcTab: function (v) { set({ svcTab: v }); },
+    tut: function (i) { set({ tutOpen: S.tutOpen === +i ? -1 : +i }); },
+    logout: function () { set({ user: null, guest: true }); toast(L('Cerraste sesión. Sigues como invitado', 'Logged out. You are now a guest')); },
+    restart: function () { Object.keys(timers).forEach(function (k) { clearTimeout(timers[k]); }); S = fresh(S); schedule(); },
+    openPicker: function (k) { set({ picker: k }); },
+    closePicker: function () { set({ picker: null }); },
+    pickSvc: function (id) {
+      var s = SVI[id], last = s.st.length - 1, k = S.picker;
+      if (k === 'svc') set({ plan: Object.assign({}, S.plan, { svc: id, from: last, to: 0, selT: null }), picker: null });
+      else if (k === 'dsvc') set({ draft: Object.assign({}, S.draft, { svc: id, from: last, to: 0 }), picker: null });
+      else if (k === 'alert') set({ sdId: id, picker: null });
+      else set({ svcInfo: id, picker: null });
+    },
+    pickSt: function (i) {
+      i = +i; var k = S.picker, obj, key, okey, name;
+      if (k === 'from' || k === 'to') { name = 'plan'; key = k; }
+      else if (k === 'dfrom' || k === 'dto') { name = 'draft'; key = k === 'dfrom' ? 'from' : 'to'; }
+      else { name = 'ld'; key = k === 'ldfrom' ? 'from' : 'to'; }
+      okey = key === 'from' ? 'to' : 'from';
+      obj = Object.assign({}, S[name]);
+      if (obj[okey] === i) { obj[okey] = obj[key]; }
+      obj[key] = i;
+      if (name === 'plan') obj.selT = null;
+      if (name === 'ld') obj.seat = null;
+      var o = { picker: null }; o[name] = obj; set(o);
+    },
+    toast: function (k) {
+      var M = {
+        wallet: L('Pasaje agregado a la billetera del teléfono', 'Ticket added to your phone wallet'), change: L('Aquí se abre el flujo para cambiar o anular', 'The change or cancel flow opens here'),
+        scan: L('Acerca la tarjeta a la parte trasera del teléfono', 'Hold the card to the back of your phone'), type: L('Aquí se abre el teclado para escribir el número', 'The keypad opens here to type the number'),
+        chat: L('Aquí se abre el chat con atención al cliente', 'The customer service chat opens here'), bug: L('Aquí se adjunta una captura y se envía el problema', 'Attach a screenshot and send the problem here'), opinan: L('Aquí se abre el registro de Pasajeros Opinan', 'The Pasajeros Opinan sign-up opens here')
+      };
+      toast(M[k] || '');
+    }
+  };
+  var IN = {
+    'fl-email': function (v) { S.fl.email = v; },
+    'fl-pass': function (v) { S.fl.pass = v; },
+    'fs-name': function (v) { S.fs.name = v; },
+    'fs-email': function (v) { S.fs.email = v; },
+    'fs-pass': function (v) { S.fs.pass = v; },
+    chatDraft: function (v) { S.chat.draft = v; },
+    draftTime: function (v) { set({ draft: Object.assign({}, S.draft, { time: +v }) }); },
+    planTime: function (v) { set({ plan: Object.assign({}, S.plan, { time: +v, when: 'pick', selT: null }) }); }
+  };
+  var FORMS = {
+    chat: function () {
+      var v = (S.chat.draft || '').trim(); if (!v) return;
+      var inp = document.getElementById('chat-in'); if (inp) inp.value = '';
+      set({ chat: Object.assign({}, S.chat, { draft: '', msgs: S.chat.msgs.concat([{ from: 'me', raw: v }]) }) });
+      botSay('texto');
+    },
+    login: function () {
+      var f = S.fl, err = {};
+      if (!validEmail(f.email.trim())) err.email = L('Escribe un correo válido, por ejemplo nombre@correo.cl', 'Enter a valid email, for example name@mail.com');
+      if (f.pass.length < 1) err.pass = L('Escribe tu contraseña', 'Enter your password');
+      if (Object.keys(err).length) { set({ fl: Object.assign({}, f, { err: err }) }); return; }
+      var nm = f.email.split('@')[0]; nm = nm.charAt(0).toUpperCase() + nm.slice(1);
+      set({ user: { name: nm, email: f.email.trim() }, guest: false, fl: { email: '', pass: '', err: {} } });
+      if (S.onboarded || S.saved.length) { enterApp(); toast(L('Sesión iniciada', 'Logged in')); } else set({ stage: 'onbTipo' });
+    },
+    signup: function () {
+      var f = S.fs, err = {};
+      if (!f.name.trim()) err.name = L('Escribe tu nombre', 'Enter your name');
+      if (!validEmail(f.email.trim())) err.email = L('Escribe un correo válido, por ejemplo nombre@correo.cl', 'Enter a valid email, for example name@mail.com');
+      if (f.pass.length < 8) err.pass = L('Usa al menos 8 caracteres', 'Use at least 8 characters');
+      if (!f.terms) err.terms = L('Debes aceptar los términos para crear la cuenta', 'You need to accept the terms to create an account');
+      if (Object.keys(err).length) { set({ fs: Object.assign({}, f, { err: err }) }); return; }
+      set({ user: { name: f.name.trim().split(' ')[0], email: f.email.trim() }, guest: false, fs: { name: '', email: '', pass: '', terms: false, err: {} } });
+      if (S.onboarded || S.saved.length) { enterApp(); toast(L('Cuenta creada', 'Account created')); } else { set({ stage: 'onbTipo' }); toast(L('Cuenta creada', 'Account created')); }
+    }
+  };
+
+  /* ============================ RENDER + PARCHE DEL DOM ============================ */
+  var queued = false;
+  function same(a, b) {
+    if (a.nodeType !== b.nodeType) return false;
+    if (a.nodeType !== 1) return true;
+    return a.namespaceURI === b.namespaceURI && a.localName === b.localName && a.getAttribute('data-k') === b.getAttribute('data-k') && a.getAttribute('type') === b.getAttribute('type');
+  }
+  function patch(o, n) {
+    if (o.nodeType !== 1) { if (o.nodeValue !== n.nodeValue) o.nodeValue = n.nodeValue; return; }
+    var i, at;
+    for (i = o.attributes.length - 1; i >= 0; i--) { at = o.attributes[i]; if (!n.hasAttribute(at.name)) o.removeAttribute(at.name); }
+    for (i = 0; i < n.attributes.length; i++) { at = n.attributes[i]; if (o.getAttribute(at.name) !== at.value) o.setAttribute(at.name, at.value); }
+    if (o.localName === 'input' && o.value !== n.getAttribute('value') && n.hasAttribute('value') && document.activeElement !== o) o.value = n.getAttribute('value');
+    if (o.localName === 'input' && o.type === 'range' && o.value !== n.getAttribute('value')) o.value = n.getAttribute('value');
+    patchKids(o, Array.prototype.slice.call(n.childNodes));
+  }
+  function patchKids(parent, kids) {
+    for (var i = 0; i < kids.length; i++) {
+      var o = parent.childNodes[i];
+      if (!o) parent.appendChild(kids[i]);
+      else if (same(o, kids[i])) patch(o, kids[i]);
+      else parent.replaceChild(kids[i], o);
+    }
+    while (parent.childNodes.length > kids.length) parent.removeChild(parent.lastChild);
+  }
+  var tplEl = document.createElement('template');
+  function render() {
+    queued = false;
+    tplEl.innerHTML = view();
+    patchKids(app, Array.prototype.slice.call(tplEl.content.childNodes));
+    var fab = app.querySelector('.fab');
+    if (fab) {
+      var ref = app.querySelector('.screen .foot') || app.querySelector('.tabbar');
+      if (ref) fab.style.bottom = Math.round(app.firstChild.getBoundingClientRect().bottom - ref.getBoundingClientRect().top + 12) + 'px';
+    }
+    var ms = app.querySelector('.msgs'), n = ms ? ms.children.length : 0;
+    if (ms && n !== lastMsgs) ms.scrollTop = ms.scrollHeight;
+    lastMsgs = n;
+  }
+  var lastMsgs = 0;
+  window.addEventListener('resize', schedule);
+  function schedule() { if (queued) return; queued = true; (window.requestAnimationFrame || setTimeout)(render); }
+
+  app.addEventListener('click', function (e) {
+    var t = e.target.closest ? e.target.closest('[data-act]') : null;
+    if (!t || !app.contains(t) || t.disabled) return;
+    var f = A[t.getAttribute('data-act')];
+    if (f) { e.preventDefault(); f(t.getAttribute('data-arg')); }
+  });
+  app.addEventListener('input', function (e) {
+    var k = e.target.getAttribute && e.target.getAttribute('data-in');
+    if (k && IN[k]) IN[k](e.target.value);
+  });
+  app.addEventListener('submit', function (e) {
+    var k = e.target.getAttribute('data-form');
+    e.preventDefault();
+    if (FORMS[k]) FORMS[k]();
+  });
+
+  if ((location.hash || '') === '#inicio') { S.stage = null; S.onboarded = true; S.guest = true; S.saved = [{ svc: 'nos', from: 9, to: 0, days: 'lv', time: 460 }]; }
+  render();
+  setInterval(function () { S.now = Date.now(); if (!S.stage || S.toast) schedule(); }, 1000);
+  if (!S.stage) scheduleAlert();
+  window.__efe = { S: function () { return S; }, A: A };
+})();
+</script>
+
+</body>
+</html>
